@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Obras — RVC</title>
+<meta name="theme-color" content="#CC2929">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F3EE;--surface:#FFFFFF;--surface2:#F0EDE6;--border:#E2DDD4;--text:#1A1714;--text2:#6B6560;--text3:#A09A93;--accent:#CC2929;--accent-l:#F9DADA;--red:#A93226;--red-l:#F5C6C2;--amber:#935E0A;--amber-l:#F5DFB8;--green:#1E4D32;--green-l:#C2DFD0;--blue:#1A3A6B;--blue-l:#D6E4F5;--r:8px;--r-lg:10px;--r-sm:6px;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
+.navbar{background:var(--accent);height:56px;display:flex;align-items:center;padding:0 16px;gap:10px;position:relative;z-index:200;flex-shrink:0}
+.nav-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-logo-img{height:32px;width:auto;display:block;flex-shrink:0;object-fit:contain}
+.nav-app-info{display:flex;flex-direction:column;justify-content:center;line-height:1.2}
+.nav-app-name{color:#fff;font-size:14px;font-weight:600;white-space:nowrap}
+.nav-app-meta{display:flex;align-items:center;gap:5px;margin-top:1px}
+.nav-app-sub{color:rgba(255,255,255,.55);font-size:10px;font-family:var(--mono);white-space:nowrap}
+.nav-meta-sep{color:rgba(255,255,255,.3);font-size:10px;font-family:var(--mono)}
+.nav-version{color:rgba(255,255,255,.45);font-size:10px;font-family:var(--mono);white-space:nowrap}
+.nav-spacer{flex:1}
+.nbtn{height:32px;padding:0 12px;border:none;border-radius:var(--r-sm);font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:background .15s}
+.nbtn-secondary{background:rgba(255,255,255,.15);color:#fff}
+.nbtn-secondary:hover{background:rgba(255,255,255,.25)}
+.nbtn-primary{background:#fff;color:var(--accent);font-weight:600}
+.nbtn-primary:hover{background:#f0f0f0}
+.nbtn-menu{background:rgba(255,255,255,.15);color:#fff;padding:0 10px;font-size:16px;line-height:1}
+.nbtn-menu:hover{background:rgba(255,255,255,.25)}
+.nav-sync{display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:6px;background:rgba(0,0,0,.18);white-space:nowrap;border:none;cursor:default;color:#fff}
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-sync.ok .sync-dot{background:#4ADE80}
+.nav-sync.syncing .sync-dot{background:#FCD34D;animation:pulse .8s ease-in-out infinite}
+.nav-sync.error .sync-dot{background:#F87171}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;border:none}
+.btn-excel{height:32px;padding:0 12px;border-radius:var(--r-sm);background:rgba(255,255,255,.15);color:#fff;border:none;font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn-excel:hover{background:rgba(255,255,255,.25)}
+.menu-dropdown{position:absolute;top:52px;right:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:300;overflow:hidden;display:none}
+.menu-dropdown.open{display:block}
+.menu-section{padding:4px 0 2px;border-bottom:1px solid var(--border)}
+.menu-section:last-child{border-bottom:none}
+.menu-section-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:6px 14px 2px}
+.menu-item{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:13px;color:var(--text2);cursor:pointer;transition:background .1s}
+.menu-item:hover{background:var(--surface2);color:var(--text)}
+.menu-item.danger{color:var(--red)}
+.menu-item.danger:hover{background:var(--red-l)}
+.menu-note{font-size:10px;color:var(--text3);line-height:1.5;padding:8px 14px 6px;border-bottom:1px solid var(--border);font-style:italic}
+.menu-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.app-wrap{display:flex;flex-direction:column;height:100vh}
+.app-body{display:flex;flex:1;overflow:hidden;min-height:0;position:relative}
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden}
+.screen.active{display:flex}
+.wizard-screen{display:none;flex-direction:column;flex:1;overflow:hidden}
+.wizard-screen.active{display:flex}
+.section-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.section-title{font-size:18px;font-weight:600;color:var(--text)}
+.cards-scroll{flex:1;overflow-y:auto;padding:0 16px 40px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding-top:4px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;display:flex;flex-direction:column}
+.card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card-close{position:absolute;top:10px;right:10px;width:22px;height:22px;border:none;background:var(--surface2);border-radius:var(--r-sm);cursor:pointer;font-size:11px;color:var(--text3);display:flex;align-items:center;justify-content:center}
+.card-close:hover{background:var(--red-l);color:var(--red)}
+.card-title{font-size:15px;font-weight:600;margin-bottom:4px;padding-right:28px}
+.card-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:10px}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;flex:1}
+.card-tag{font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;background:var(--surface2);color:var(--text2)}
+.card-meta{font-size:11px;color:var(--text2);margin-bottom:4px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.card-date{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.card-btn-sec{height:28px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface2);cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s}
+.card-btn-sec:hover{border-color:var(--accent);color:var(--accent)}
+.card-btn-prim{height:28px;padding:0 12px;border:none;border-radius:var(--r-sm);background:var(--accent);color:#fff;font-size:11px;font-family:var(--font);font-weight:600;cursor:pointer}
+.card-btn-prim:hover{background:var(--red)}
+.estado-vacio{display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:16px;color:var(--text3);text-align:center}
+.estado-vacio p{font-size:14px;line-height:1.6}
+.wizard-header{padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.wizard-step-lbl{font-size:12px;font-weight:600;color:var(--text2)}
+.pasos{display:flex;align-items:center;gap:5px}
+.paso-n{width:26px;height:26px;border-radius:50%;background:var(--surface2);color:var(--text3);border:1.5px solid var(--border);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.paso-n.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.paso-n.done{background:var(--green);color:#fff;border-color:var(--green)}
+.paso-sep{height:2px;width:20px;background:var(--border);border-radius:1px}
+.wizard-body{flex:1;overflow-y:auto;padding:20px}
+.wizard-footer{padding:12px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-shrink:0}
+.wiz-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:14px}
+.wiz-section-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.field-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.field-grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.field-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;display:block}
+.req{color:var(--accent)}
+.field-input{width:100%;border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px;font-size:13px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;transition:border-color .15s}
+.field-input:focus{border-color:var(--accent)}
+textarea.field-input{resize:vertical;padding:8px 10px}
+.wiz-hint{font-size:11px;color:var(--amber);background:var(--amber-l);border-left:3px solid var(--amber);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:14px;line-height:1.5}
+.obra-tabs-nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 16px;flex-shrink:0}
+.obra-tab{padding:11px 16px;font-size:13px;font-weight:500;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;font-family:var(--font);transition:all .15s}
+.obra-tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.panel-tab{display:none;flex:1;overflow-y:auto;padding:18px 20px}
+.panel-tab.on{display:block}
+.sec-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:14px}
+.sec-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.campo-vista{display:flex;flex-direction:column;gap:3px;margin-bottom:2px}
+.campo-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.campo-valor{font-size:14px;color:var(--text);font-weight:500}
+.campo-valor.vacio{color:var(--text3);font-style:italic;font-weight:400}
+.sup-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:8px}
+.sup-card{background:var(--surface2);border-radius:var(--r-sm);padding:10px;text-align:center}
+.sup-val{font-size:16px;font-weight:600;color:var(--text)}
+.tabla-pisos{width:100%;border-collapse:collapse;font-size:12px}
+.tabla-pisos th,.tabla-pisos td{padding:7px 10px;border-bottom:1px solid var(--bg);text-align:left}
+.tabla-pisos th{background:var(--surface2);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border)}
+.tabla-deptos{width:100%;border-collapse:collapse;font-size:12px}
+.tabla-deptos th,.tabla-deptos td{padding:7px 10px;border-bottom:1px solid var(--bg);text-align:left}
+.tabla-deptos th{background:var(--surface2);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border)}
+.chips-row,.chips-cell{display:flex;flex-wrap:wrap;gap:3px}
+.chip-d{font-size:10px;padding:2px 6px;background:var(--accent-l);color:var(--accent);border-radius:4px;cursor:pointer;user-select:none;transition:all .1s}
+.chip-d:hover{opacity:.75}
+.chip-excl{background:var(--surface2)!important;color:var(--text3)!important;text-decoration:line-through;border:1px solid var(--border)}
+.input-cant{width:55px;border:1px solid var(--border);border-radius:var(--r-sm);padding:4px 8px;font-size:12px;font-family:var(--font);background:var(--surface);text-align:center;outline:none}
+.input-cant:focus{border-color:var(--accent)}
+.btn{height:34px;padding:0 14px;border-radius:var(--r-sm);font-size:13px;font-family:var(--font);font-weight:500;cursor:pointer;border:none;display:flex;align-items:center;gap:6px}
+.btn-primary{background:var(--accent);color:#fff;font-weight:600}
+.btn-primary:hover{background:var(--red)}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{height:28px;padding:0 12px;font-size:12px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r-lg);width:100%;max-width:420px;max-height:calc(100vh - 48px);overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.22)}
+.modal-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{width:28px;height:28px;border:none;background:var(--surface2);border-radius:var(--r-sm);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.modal-body{padding:16px 20px;font-size:13px;color:var(--text2);line-height:1.6}
+.modal-footer{padding:12px 20px 16px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:var(--surface)}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:var(--text);color:#fff;padding:12px 22px;border-radius:var(--r-sm);font-size:13px;font-weight:500;opacity:0;transition:all .25s;z-index:999;pointer-events:none;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.toast.success{background:var(--green)}
+.toast.warning{background:var(--amber)}
+.toast.error{background:var(--red)}
+.toast.info{background:var(--blue)}
+.badge-estado{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-presupuesto{background:var(--blue-l);color:var(--blue)}
+.badge-ejecucion{background:var(--amber-l);color:var(--amber)}
+.badge-finalizada{background:var(--green-l);color:var(--green)}
+.plazo-calc{background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;display:flex;flex-direction:column;gap:3px}
+.plazo-calc-num{font-size:22px;font-weight:600;color:var(--accent);font-family:var(--mono)}
+.plazo-calc-lbl{font-size:10px;color:var(--text2)}
+.plazo-oferta-input{width:80px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:6px 10px;font-size:18px;font-weight:600;font-family:var(--mono);color:var(--accent);background:var(--surface);text-align:center;outline:none}
+.plazo-oferta-input:focus{border-color:var(--accent)}
+.edificio-tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.edificio-tab{padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);color:var(--text2);transition:all .15s}
+.edificio-tab.on{background:var(--accent-l);border-color:var(--accent);color:var(--accent);font-weight:600}
+.torre-bloque{background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:8px}
+
+/* ══ TABLE VIEW ══ */
+.table-view{flex:1;overflow:auto;padding:0 0 40px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+.data-table th{text-align:left;padding:4px 10px;font-size:10px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.4px;background:var(--surface2);
+  border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:1}
+.data-table th:first-child{padding-left:14px}
+.data-table td{padding:2px 10px;border-bottom:1px solid #EDEAE2;color:var(--text);vertical-align:middle;line-height:1.25;font-size:12px}
+.data-table td:first-child{padding-left:14px}
+.data-table tr:hover td{background:#fafaf8}
+.dt-th{position:relative;cursor:pointer;user-select:none;padding:4px 24px 4px 10px!important}
+.dt-th:hover{background:#e8e4dc}
+.sort-icon{font-size:10px;color:var(--text3);margin-left:4px}
+.dt-th.sort-asc,.dt-th.sort-desc{background:var(--accent-l)!important;color:var(--accent)}
+.dt-th.sort-asc .sort-icon,.dt-th.sort-desc .sort-icon{color:var(--accent)}
+.col-resize{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:col-resize;
+  background:transparent;border-right:2px solid var(--border)}
+.col-resize:hover,.col-resize.resizing{border-right-color:var(--accent)}
+.td-drag{color:var(--text3);opacity:0;cursor:grab;font-size:13px;padding-right:4px}
+.data-table tr:hover .td-drag{opacity:1}
+.td-group{font-weight:600;color:var(--text);white-space:nowrap;min-width:160px}
+.td-sub{color:var(--text2);white-space:nowrap}
+.td-attr{white-space:nowrap;text-align:center}
+.td-mono{font-family:var(--mono);font-size:11px;color:var(--text2);white-space:nowrap}
+/* ══ VISTA TOGGLE ══ */
+.menu-item.active-view{background:var(--accent-l);color:var(--accent);font-weight:600}
+.menu-item.active-view:hover{background:var(--accent-l)}
+.view-check{margin-left:auto;font-size:11px;color:var(--accent)}
+/* ══ BADGES EXTRA ══ */
+.badge-estado{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-presupuesto{background:var(--blue-l);color:var(--blue)}
+.badge-ejecucion{background:var(--amber-l);color:var(--amber)}
+.badge-finalizada{background:var(--green-l);color:var(--green)}
+/* ══ PLAZOS ══ */
+.plazo-calc{background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;display:flex;flex-direction:column;gap:3px}
+.plazo-calc-num{font-size:22px;font-weight:600;color:var(--accent);font-family:var(--mono)}
+.plazo-calc-lbl{font-size:10px;color:var(--text2)}
+.plazo-oferta-input{width:80px;border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:6px 10px;font-size:18px;font-weight:600;font-family:var(--mono);color:var(--accent);
+  background:var(--surface);text-align:center;outline:none}
+.plazo-oferta-input:focus{border-color:var(--accent)}
+/* ══ TORRES ══ */
+.torre-bloque{background:var(--surface2);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:8px}
+.edificio-tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.edificio-tab{padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border);
+  background:var(--surface);font-size:12px;font-weight:500;cursor:pointer;
+  font-family:var(--font);color:var(--text2);transition:all .15s}
+.edificio-tab.on{background:var(--accent-l);border-color:var(--accent);color:var(--accent);font-weight:600}
+/* ══ EXCEL BTN ══ */
+.btn-excel{height:32px;padding:0 12px;border-radius:var(--r-sm);background:rgba(255,255,255,.15);
+  color:#fff;border:none;font-size:12px;font-family:var(--font);font-weight:500;cursor:pointer;
+  display:flex;align-items:center;gap:5px}
+.btn-excel:hover{background:rgba(255,255,255,.25)}
+
+
+/* ══ FILTER SIDEBAR (tabla) ══ */
+.tabla-layout{display:flex;flex:1;overflow:hidden;min-height:0}
+.filtros-panel{width:200px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:12px}
+.filtros-titulo{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.filtros-clear{font-size:10px;color:var(--accent);cursor:pointer;font-weight:500;font-family:var(--font);background:none;border:none;padding:0}
+.filtros-clear:hover{text-decoration:underline}
+.filtro-grupo{margin-bottom:14px}
+.filtro-grupo-label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.filtro-opcion{display:flex;align-items:center;gap:6px;padding:3px 0;cursor:pointer;font-size:12px;color:var(--text2)}
+.filtro-opcion:hover{color:var(--text)}
+.filtro-opcion input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;cursor:pointer}
+.filtro-opcion span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filtro-count{font-size:10px;color:var(--text3);font-family:var(--mono);margin-left:auto;flex-shrink:0}
+.tabla-scroll-wrap{flex:1;overflow:auto;min-width:0}
+
+/* ══ LOGIN SCREEN ══ */
+.login-screen{display:none;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;background:var(--bg);min-height:100vh}
+.login-screen.active{display:flex}
+.login-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);
+  padding:40px 36px;max-width:380px;width:90%;text-align:center;
+  box-shadow:0 4px 24px rgba(0,0,0,.1)}
+.login-logo-wrap{width:64px;height:64px;border-radius:14px;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden}
+.login-logo-wrap img{height:40px;width:auto;object-fit:contain}
+.login-titulo{font-size:20px;font-weight:600;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text2);margin-bottom:28px}
+.btn-google{width:100%;height:42px;border-radius:var(--r-sm);border:1px solid var(--border);
+  background:var(--surface);color:var(--text);font-size:14px;font-weight:500;
+  font-family:var(--font);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:10px;transition:background .15s,border-color .15s}
+.btn-google:hover{background:var(--surface2);border-color:var(--accent)}
+.login-error{font-size:12px;color:var(--red);margin-top:12px;min-height:18px}
+/* ══ EXTRA CSS: Sidebar detail nav, cards fixed, depto grid ══ */
+
+/* Detail layout with left sidebar */
+.obra-layout{display:flex;flex:1;overflow:hidden;min-height:0}
+.obra-sidenav{width:200px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
+  padding:12px 0;overflow-y:auto}
+.obra-nav-section{padding:6px 14px 2px;font-size:9px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.obra-nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;
+  font-size:13px;color:var(--text2);cursor:pointer;transition:all .12s;
+  border-left:2.5px solid transparent;font-family:var(--font)}
+.obra-nav-item:hover{background:var(--surface2);color:var(--text)}
+.obra-nav-item.on{background:var(--accent-l);color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.obra-nav-item.sub{padding-left:28px;font-size:12px}
+.obra-nav-item.sub.on{background:var(--accent-l);color:var(--accent);border-left-color:var(--accent)}
+.obra-content{flex:1;overflow-y:auto;padding:18px 20px}
+
+/* Cards — fixed schema */
+.card-row{display:flex;align-items:baseline;gap:4px;font-size:12px;margin-bottom:1px}
+.card-row-label{font-size:10px;color:var(--text3);white-space:nowrap;min-width:0}
+.card-row-val{color:var(--text2);overflow:hidden;flex:1;min-width:0}
+.card-row-val.empty{color:var(--text3);font-style:italic}
+.card-divider{height:1px;background:var(--surface2);margin:6px 0}
+
+/* Detail table (compact) */
+.det-table{width:100%;border-collapse:collapse;font-size:13px}
+.det-table td{padding:5px 10px;border-bottom:1px solid var(--bg);vertical-align:top}
+.det-table td:first-child{font-size:10px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;width:160px}
+.det-table td:last-child{color:var(--text);font-weight:500}
+.det-table tr:last-child td{border-bottom:none}
+.det-section-hdr{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.5px;padding:10px 0 4px;margin-top:4px;border-bottom:1.5px solid var(--border);
+  margin-bottom:2px}
+
+/* Estado selector */
+.estado-selector{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.estado-btn{padding:5px 14px;border-radius:99px;border:1.5px solid var(--border);
+  background:var(--surface);font-size:12px;font-family:var(--font);cursor:pointer;
+  color:var(--text2);transition:all .15s}
+.estado-btn.on-presupuesto{background:var(--blue-l);color:var(--blue);border-color:var(--blue)}
+.estado-btn.on-ejecucion{background:var(--amber-l);color:var(--amber);border-color:var(--amber)}
+.estado-btn.on-finalizada{background:var(--green-l);color:var(--green);border-color:var(--green)}
+
+/* Depto grid — aligned columns */
+.depto-grid-wrap{overflow-x:auto;overflow-y:auto;max-height:60vh}
+.depto-piso-row{display:flex;align-items:center;gap:0;margin-bottom:1px}
+.depto-piso-label{font-size:11px;font-weight:600;color:var(--text2);
+  width:52px;flex-shrink:0;font-family:var(--mono)}
+.depto-chips-row{display:flex;gap:3px;flex-wrap:nowrap}
+.depto-chip{width:36px;text-align:center;padding:2px 0;background:var(--accent-l);
+  color:var(--accent);border-radius:4px;font-size:10px;font-family:var(--mono);flex-shrink:0}
+.depto-chip.excl{background:var(--surface2);color:var(--text3);text-decoration:line-through}
+.depto-chip.empty{background:transparent;color:transparent;pointer-events:none}
+/* Wizard depto chips — clickable */
+.wiz-chip{width:36px;text-align:center;padding:3px 0;background:var(--accent-l);
+  color:var(--accent);border-radius:4px;font-size:10px;font-family:var(--mono);
+  cursor:pointer;flex-shrink:0;user-select:none;transition:all .1s}
+.wiz-chip:hover{opacity:.75}
+.wiz-chip.excl{background:var(--surface2);color:var(--text3);text-decoration:line-through;
+  border:1px solid var(--border)}
+
+/* Tipologia table */
+.tipo-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.tipo-table th{padding:5px 10px;background:var(--surface2);font-size:10px;font-weight:700;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border);
+  text-align:left}
+.tipo-table td{padding:5px 10px;border-bottom:1px solid var(--bg)}
+.tipo-table tr:last-child td{border-bottom:none}
+.tipo-select{border:1px solid var(--border);border-radius:var(--r-sm);padding:3px 6px;
+  font-size:12px;font-family:var(--font);background:var(--bg);outline:none;width:100%}
+.tipo-select:focus{border-color:var(--accent)}
+.tipo-input-sm{border:1px solid var(--border);border-radius:var(--r-sm);padding:3px 6px;
+  font-size:12px;font-family:var(--font);background:var(--bg);outline:none;width:70px;text-align:center}
+.tipo-input-sm:focus{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<nav class="navbar" id="navbar">
+  <div class="nav-left">
+    <img src="data:image/png;base64,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" alt="RVC" class="nav-logo-img">
+    <div class="nav-app-info">
+      <span class="nav-app-name" id="nav-app-name">Registro de Obras</span>
+      <div class="nav-app-meta">
+        <span class="nav-app-sub" id="nav-app-sub">RVC Constructora</span>
+        <span class="nav-meta-sep">·</span>
+        <span class="nav-version">v2.1</span>
+      </div>
+    </div>
+  </div>
+  <div class="nav-spacer"></div>
+  <button class="btn-excel" id="nav-btn-excel" style="display:none" onclick="exportarExcel()">⬇ Excel</button>
+  <button class="nbtn nbtn-secondary" id="nav-btn-sec" style="display:none" onclick="goInicio()">← Inicio</button>
+  <button class="nbtn nbtn-secondary" id="nav-btn-editar" style="display:none" onclick="editarObraActiva()">⚙ Editar</button>
+  <button class="nbtn nbtn-primary" id="nav-btn-prim" onclick="iniciarWizardNuevo()">+ Nueva Obra</button>
+  <div class="nav-sync ok" id="sync-pill"><span class="sync-dot"></span><span class="sync-label">Sincronizado</span></div>
+  <button class="nbtn nbtn-menu" id="menu-btn" onclick="toggleMenu(event)">☰</button>
+  <div class="nav-avatar" id="nav-avatar">RV</div>
+</nav>
+
+<div class="menu-dropdown" id="menu-dropdown">
+
+  <div class="menu-note">
+    Registro de Obras · RVC Constructora v2.1
+  </div>
+
+  <!-- VISTAS — solo visible en inicio -->
+  <div class="menu-section" id="menu-vistas" style="display:none">
+    <div class="menu-section-label">Vistas</div>
+    <div class="menu-item active-view" id="view-tarjetas-btn" onclick="setVista('tarjetas')">
+      <span class="menu-icon">📋</span>Tarjetas<span class="view-check" id="check-tarjetas">✓</span>
+    </div>
+    <div class="menu-item" id="view-tabla-btn" onclick="setVista('tabla')">
+      <span class="menu-icon">📊</span>Tabla<span class="view-check" id="check-tabla" style="opacity:0">✓</span>
+    </div>
+  </div>
+
+  <!-- ACCIONES -->
+  <div class="menu-section">
+    <div class="menu-section-label">Acciones</div>
+    <div class="menu-item" onclick="closeMenu();iniciarWizardNuevo()"><span class="menu-icon">＋</span>Nueva obra</div>
+  </div>
+
+  <!-- EXPORTAR / IMPORTAR -->
+  <div class="menu-section">
+    <div class="menu-section-label">Exportar</div>
+    <div class="menu-item" onclick="exportarExcel()"><span class="menu-icon">📤</span>Exportar Excel</div>
+    <div class="menu-item" onclick="exportarJSON()"><span class="menu-icon">📤</span>Exportar JSON</div>
+  </div>
+  <div class="menu-section">
+    <div class="menu-section-label">Importar</div>
+    <div class="menu-item" onclick="importarExcel()"><span class="menu-icon">📥</span>Cargar Excel</div>
+    <div class="menu-item" onclick="importarJSON()"><span class="menu-icon">📥</span>Cargar JSON</div>
+  </div>
+
+  <!-- SESIÓN -->
+  <div class="menu-section">
+    <div class="menu-section-label">Sesión</div>
+    <div class="menu-item danger" onclick="closeMenu();_auth.signOut()">
+      <span class="menu-icon">↩</span>Cerrar sesión
+    </div>
+  </div>
+
+</div>
+
+<div class="app-body">
+<main style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0">
+
+<!-- LOGIN -->
+<div class="login-screen active" id="screen-login">
+  <div class="login-card">
+    <div class="login-logo-wrap"><img src="data:image/png;base64,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" alt="RVC"></div>
+    <div class="login-titulo">Registro de Obras</div>
+    <div class="login-sub">RVC Constructora · Plataforma de Proyectos</div>
+    <button class="btn-google" id="btn-login">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      Iniciar sesión con Google
+    </button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- INICIO -->
+<div class="screen" id="screen-inicio">
+  <div class="section-header">
+    <span class="section-title">Obras</span>
+    <span id="ini-conteo" style="font-size:13px;color:var(--text3);font-family:var(--mono)"></span>
+  </div>
+  <div id="vista-tarjetas-cont" style="flex:1;overflow-y:auto;padding:0 16px 40px;display:flex;flex-direction:column">
+    <div class="cards-grid" id="grilla-obras"></div>
+    <div class="estado-vacio" id="estado-vacio">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="opacity:.3"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <p>No hay obras registradas.</p>
+      <button class="btn btn-primary" onclick="iniciarWizardNuevo()">+ Nueva Obra</button>
+    </div>
+  </div>
+  <div id="vista-tabla-cont" style="display:none;flex:1;overflow:hidden;min-height:0;flex-direction:column">
+    <div class="tabla-layout">
+      <div class="filtros-panel" id="filtros-panel">
+        <div class="filtros-titulo">Filtros <button class="filtros-clear" onclick="limpiarFiltros()">Limpiar</button></div>
+        <div class="filtro-grupo"><div class="filtro-grupo-label">Segmento</div><div id="filtro-segmento"></div></div>
+        <div class="filtro-grupo"><div class="filtro-grupo-label">Ciudad</div><div id="filtro-ciudad"></div></div>
+        <div class="filtro-grupo"><div class="filtro-grupo-label">Comuna</div><div id="filtro-comuna"></div></div>
+      </div>
+      <div class="tabla-scroll-wrap">
+        <table class="data-table">
+          <thead><tr>
+            <th style="width:28px"></th>
+            <th class="dt-th" data-col="0">Obra / CG <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="1">Torre <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="2">Estado <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="3">Segmento <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="4">Ciudad <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="5">Constructora <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="6" style="text-align:center">Pisos <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="7" style="text-align:center">Sub. <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="8" style="text-align:center">Deptos <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="9" style="text-align:right">Sup. Total (m²) <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="10" style="text-align:right">Sup. Placa (m²) <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="11" style="text-align:center">Plazo Oferta (m) <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="12" style="text-align:center">Plazo Contrato (m) <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th class="dt-th" data-col="13" style="text-align:center">Plazo Rectif. (m) <span class="sort-icon">↕</span><div class="col-resize" onmousedown="startResize(event,this)"></div></th>
+            <th style="width:70px"></th>
+          </tr></thead>
+          <tbody id="dt-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIZARD -->
+<div class="wizard-screen" id="screen-wizard">
+  <div class="wizard-header">
+    <span class="wizard-step-lbl" id="wiz-step-lbl">Paso 1 de 4</span>
+    <div class="pasos">
+      <div class="paso-n on" data-paso="1">1</div><div class="paso-sep"></div>
+      <div class="paso-n" data-paso="2">2</div><div class="paso-sep"></div>
+      <div class="paso-n" data-paso="3">3</div><div class="paso-sep"></div>
+      <div class="paso-n" data-paso="4">4</div>
+    </div>
+  </div>
+  <div class="wizard-body" id="wiz-body"></div>
+  <div class="wizard-footer">
+    <button class="btn btn-secondary" id="wiz-btn-anterior" style="display:none" onclick="wizAnterior()">← Anterior</button>
+    <span style="flex:1"></span>
+    <button class="btn btn-secondary" onclick="wizCancelar()">Cancelar</button>
+    <button class="btn btn-primary" id="wiz-btn-siguiente" onclick="wizSiguiente()">Siguiente →</button>
+    <button class="btn btn-primary" id="wiz-btn-guardar" style="display:none" onclick="wizGuardar()">✓ Guardar Obra</button>
+  </div>
+</div>
+
+<!-- DETALLE OBRA — sidebar + content -->
+<div class="screen" id="screen-obra">
+  <div class="obra-layout">
+
+    <!-- Sidebar izquierdo -->
+    <nav class="obra-sidenav">
+      <div class="obra-nav-section">Información</div>
+      <div class="obra-nav-item on" onclick="obraNavTo('obra-general',this)">
+        <span>📋</span> General
+      </div>
+
+      <div class="obra-nav-section" style="margin-top:8px">Departamentos</div>
+      <div class="obra-nav-item sub" onclick="obraNavTo('obra-listado',this)">
+        <span>🏠</span> Listado
+      </div>
+      <div class="obra-nav-item sub" onclick="obraNavTo('obra-atributos',this)">
+        <span>📐</span> Atributos
+      </div>
+
+      <div class="obra-nav-section" style="margin-top:8px">Gestión</div>
+      <div class="obra-nav-item" onclick="obraNavTo('obra-plazos',this)">
+        <span>📅</span> Plazos
+      </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="obra-content">
+      <div id="obra-general"></div>
+      <div id="obra-listado"  style="display:none"></div>
+      <div id="obra-atributos" style="display:none"></div>
+      <div id="obra-plazos"   style="display:none"></div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-titulo">Confirmar</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-msg"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modal-confirmar">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+'use strict';
+
+/* ══ CONSTANTES ══ */
+var CONSTRUCTORAS = ['RVC Ingeniería y Construcción S.A.','RVC Constructora Ltda.'];
+var SEGMENTOS     = ['Bosque','Valle','Parque','Andes','Cumbre','DS-19'];
+var ESTADOS       = ['Presupuesto','En ejecución','Finalizada'];
+var ESTADO_CSS    = {'Presupuesto':'badge-presupuesto','En ejecución':'badge-ejecucion','Finalizada':'badge-finalizada'};
+
+var CIUDADES = ['Antofagasta','ConCon','Coquimbo','Iquique','Santiago','Valparaíso','Viña del Mar'];
+var COMUNAS_MAP = {
+  'Antofagasta': ['Antofagasta'],
+  'ConCon':      ['ConCon'],
+  'Coquimbo':    ['Coquimbo'],
+  'Iquique':     ['Iquique'],
+  'Santiago':    ['El Bosque','Estación Central','Huechuraba','La Cisterna','Maipú','Providencia','San Miguel','Santiago Centro'],
+  'Valparaíso':  ['Valparaíso'],
+  'Viña del Mar':['Viña del Mar'],
+};
+
+/* ══ ESTADO GLOBAL ══ */
+var _obras=[], _obraActiva=null, _cf={}, _cfPaso=1, _cfEdit=false, _cfEdifActivo=0;
+var _vista='tarjetas'; // 'tarjetas' | 'tabla'
+var WIZ_PASOS=4;
+
+/* ══ HELPERS ══ */
+function esc(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escQ(s){return (s||'').toString().replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function fmt(iso){if(!iso)return'';var p=iso.slice(0,10).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:iso;}
+function genId(){return 'obra_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
+function mesesEntre(d1,d2){
+  if(!d1||!d2)return null;
+  var a=new Date(d1),b=new Date(d2);
+  if(isNaN(a)||isNaN(b))return null;
+  return Math.round((b-a)/(1000*60*60*24*30.44));
+}
+
+/* ── Ciudad/Comuna helpers ── */
+function getComunas(ciudad){
+  return COMUNAS_MAP[ciudad] || [ciudad];
+}
+function buildComunaSelect(selectEl, ciudad, valorActual){
+  var opciones = getComunas(ciudad);
+  selectEl.innerHTML = opciones.map(function(c){
+    return '<option value="'+esc(c)+'"'+(c===valorActual?' selected':'')+'>'+esc(c)+'</option>';
+  }).join('');
+  // Si tiene solo una, ocultar el bloque; si tiene varias, mostrar
+  // bloque-comuna always visible
+  // Auto-asignar si solo hay una
+  if(opciones.length === 1) return opciones[0];
+  return valorActual || opciones[0];
+}
+
+function fi(id,label,type,val,ph,req){
+  return '<div><label class="field-label">'+label+(req?'<span class="req"> *</span>':'')+'</label>'
+    +'<input id="'+id+'" type="'+type+'" value="'+esc(val||'')+'" placeholder="'+esc(ph||'')+'" class="field-input"></div>';
+}
+function fsel(id,label,opts,cur,req){
+  var o=opts.map(function(v){return '<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>';}).join('');
+  return '<div><label class="field-label">'+label+(req?'<span class="req"> *</span>':'')+'</label>'
+    +'<select id="'+id+'" class="field-input">'+o+'</select></div>';
+}
+function cvF(label,val){
+  return '<div class="campo-vista"><div class="campo-label">'+label+'</div><div class="campo-valor'+(val?'':' vacio')+'">'+esc(val||'—')+'</div></div>';
+}
+function cvR(label,val){
+  return '<div class="campo-vista"><div class="campo-label">'+label+'</div><div class="campo-valor">'+val+'</div></div>';
+}
+
+/* ══ TOAST ══ */
+var _toastTimer;
+function showToast(msg,tipo){
+  var t=document.getElementById('toast');
+  t.className='toast';if(tipo)t.classList.add(tipo);
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_toastTimer);_toastTimer=setTimeout(function(){t.classList.remove('show');},2400);
+}
+
+/* ══ MODAL ══ */
+var _modalCb;
+function showModal(titulo,msg,onOk){
+  document.getElementById('modal-titulo').textContent=titulo;
+  document.getElementById('modal-msg').textContent=msg;
+  _modalCb=onOk;document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');_modalCb=null;}
+document.getElementById('modal-confirmar').addEventListener('click',function(){
+  closeModal();if(_modalCb){_modalCb();_modalCb=null;}
+});
+
+/* ══ MENÚ ══ */
+function toggleMenu(e){e.stopPropagation();document.getElementById('menu-dropdown').classList.toggle('open');}
+function closeMenu(){document.getElementById('menu-dropdown').classList.remove('open');}
+document.addEventListener('click',closeMenu);
+
+/* ══ VISTA ══ */
+function setVista(v){
+  _vista=v;
+  var esTarjetas = v==='tarjetas';
+  document.getElementById('vista-tarjetas-cont').style.display = esTarjetas?'flex':'none';
+  document.getElementById('vista-tabla-cont').style.display    = esTarjetas?'none':'flex';
+
+  document.getElementById('check-tarjetas').style.opacity = esTarjetas?'1':'0';
+  document.getElementById('check-tabla').style.opacity    = esTarjetas?'0':'1';
+  document.getElementById('view-tarjetas-btn').classList.toggle('active-view', esTarjetas);
+  document.getElementById('view-tabla-btn').classList.toggle('active-view', !esTarjetas);
+  if(!esTarjetas){ renderTabla(); }
+  closeMenu();
+}
+
+/* ══ NAVEGACIÓN ══ */
+function showScreen(id){
+  document.querySelectorAll('.screen,.wizard-screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('screen-'+id).classList.add('active');
+  var isInicio=id==='inicio', isObra=id==='obra', isWiz=id==='wizard';
+  document.getElementById('nav-btn-prim').style.display    = isInicio?'':'none';
+  document.getElementById('nav-btn-excel').style.display   = isInicio?'':'none';
+  document.getElementById('nav-btn-sec').style.display     = (!isInicio&&!isWiz)?'':'none';
+  document.getElementById('nav-btn-editar').style.display  = isObra?'':'none';
+  document.getElementById('menu-vistas').style.display     = isInicio?'':'none';
+  document.getElementById('nav-app-name').textContent = isObra&&_obraActiva?_obraActiva.nombre:'Registro de Obras';
+  document.getElementById('nav-app-sub').textContent  = isObra&&_obraActiva
+    ? [_obraActiva.ciudad,_obraActiva.comuna].filter(Boolean).join(' · ')||'RVC'
+    : 'RVC Constructora';
+}
+function goInicio(){_obraActiva=null;showScreen('inicio');}
+
+/* ══ CALCULOS ══ */
+function deptosTorre(t){
+  return (t.departamentos||[]).reduce(function(s,p){
+    return s+(p.deptos||[]).filter(function(d){return !(p.excluidos||[]).includes(d);}).length;
+  },0);
+}
+function deptosObra(o){return (o.torres||[]).reduce(function(s,t){return s+deptosTorre(t);},0);}
+function maxPisos(o){return Math.max.apply(null,(o.torres||[]).map(function(t){return t.pisos||0;}).concat([0]));}
+
+/* ══ FIREBASE CONFIG ══ */
+var FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyCmUlkihNfxV8CyHOZ-38gcEx27jqU0z04",
+  authDomain:        "rvc-pilotos-app.firebaseapp.com",
+  projectId:         "rvc-pilotos-app",
+  storageBucket:     "rvc-pilotos-app.firebasestorage.app",
+  messagingSenderId: "304566913753",
+  appId:             "1:304566913753:web:f1936de8ca85188338ccc8"
+};
+var APP_ID = 'registro_obras';
+var FS_COL = 'registro_obras_proyectos';
+
+/* ══ FIREBASE STATE ══ */
+var _db=null, _auth=null, _currentUser=null, _unsubscribe=null;
+
+(function initFirebase(){
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    _db   = firebase.firestore();
+    _auth = firebase.auth();
+    _db.enablePersistence({ synchronizeTabs: true }).catch(function(){});
+  } catch(e){ console.warn('[RO] Firebase init:', e.message); }
+})();
+
+/* ══ AUTH ══ */
+firebase.auth().onAuthStateChanged(function(user){
+  if(!user){ mostrarLogin(); return; }
+  if(!_db){ iniciarApp(user); return; }
+  _db.collection('plataforma_usuarios').doc(user.email.toLowerCase()).get()
+    .then(function(snap){
+      var d = snap.exists ? snap.data() : null;
+      var ok = d && d.activo !== false && (d.apps||[]).includes(APP_ID);
+      if(!ok){
+        var msg = !d ? 'Tu cuenta ('+user.email+') no está registrada en la plataforma.'
+          : d.activo===false ? 'Tu cuenta está desactivada.'
+          : 'No tienes acceso a esta app. Solicítalo al administrador.';
+        document.getElementById('login-error').textContent = msg;
+        _auth.signOut();
+        mostrarLogin();
+        return;
+      }
+      iniciarApp(user);
+    })
+    .catch(function(){ iniciarApp(user); }); // offline: allow cached access
+});
+
+function mostrarLogin(){
+  document.querySelectorAll('.screen,.wizard-screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('screen-login').classList.add('active');
+  ['nav-btn-prim','nav-btn-excel','nav-btn-sec','nav-btn-editar'].forEach(function(id){
+    document.getElementById(id).style.display='none';
+  });
+  document.getElementById('menu-vistas').style.display='none';
+}
+
+function iniciarApp(user){
+  _currentUser = user;
+  document.getElementById('login-error').textContent = '';
+  var ini = user.displayName || user.email || '';
+  document.getElementById('nav-avatar').textContent = ini.slice(0,2).toUpperCase();
+  listenObras();
+}
+
+document.getElementById('btn-login').addEventListener('click', function(){
+  var provider = new firebase.auth.GoogleAuthProvider();
+  _auth.signInWithPopup(provider).catch(function(e){
+    document.getElementById('login-error').textContent = 'Error: '+e.message;
+  });
+});
+
+/* ══ SYNC INDICATOR ══ */
+function setSyncEstado(estado){
+  var labels = {ok:'Sincronizado', sincronizando:'Sincronizando…', error:'Error', offline:'Sin conexión'};
+  var el = document.getElementById('sync-pill');
+  el.className = 'nav-sync '+estado;
+  var lbl = el.querySelector('.sync-label');
+  if(lbl) lbl.textContent = labels[estado]||estado;
+}
+
+/* ══ FIRESTORE LISTENER ══ */
+function listenObras(){
+  if(!_db){ setSyncEstado('offline'); showScreen('inicio'); renderGrilla(); return; }
+  setSyncEstado('sincronizando');
+  if(_unsubscribe) _unsubscribe();
+  _unsubscribe = _db.collection(FS_COL)
+    .orderBy('modificadoEn','desc')
+    .onSnapshot(function(snap){
+      _obras = snap.docs.map(function(d){ return Object.assign({_docId:d.id}, d.data()); });
+      setSyncEstado('ok');
+      showScreen('inicio');
+      renderGrilla();
+      // Refresh open obra if any
+      if(_obraActiva){
+        var up = _obras.find(function(o){ return o.id===_obraActiva.id; });
+        if(up){ _obraActiva=up; renderDetalle(); }
+      }
+    }, function(e){
+      setSyncEstado('error');
+      console.warn('[RO] Listener error:', e.message);
+      showScreen('inicio');
+    });
+}
+
+function guardarObra(datos){
+  if(!_db){ showToast('Sin conexión — no se pudo guardar.','error'); return Promise.reject(); }
+  setSyncEstado('sincronizando');
+  datos.modificadoEn = new Date().toISOString();
+  if(!datos.creadoEn) datos.creadoEn = datos.modificadoEn;
+  datos.creadoPor = _currentUser ? _currentUser.email : '';
+  return _db.collection(FS_COL).doc(datos.id).set(datos)
+    .then(function(){ setSyncEstado('ok'); })
+    .catch(function(e){ setSyncEstado('error'); showToast('Error al guardar: '+e.message,'error'); throw e; });
+}
+
+function eliminarObra(id){
+  if(!_db) return Promise.reject();
+  return _db.collection(FS_COL).doc(id).delete();
+}
+
+/* ══ GRILLA (vista tarjetas) ══ */
+
+
+/* ══ VISTA TABLA ══ */
+var dtSortCol=-1, dtSortDir=1, resizeData=null;
+
+function renderTabla(){
+  var tbody=document.getElementById('dt-tbody');
+  if(!tbody)return;
+  var rows=[];
+  _obras.forEach(function(o){
+    if(!obraPassesFiltro(o))return;
+    var pc=mesesEntre(o.inicioCont,o.terminoCont);
+    var pr=mesesEntre(o.inicioAcor,o.terminoAcor);
+    (o.torres||[]).forEach(function(t){
+      var eCSS=ESTADO_CSS[o.estado]||'badge-presupuesto';
+      var oid=escQ(o.id);
+      rows.push('<tr onclick="abrirObra(\''+oid+'\',null)" style="cursor:pointer">'
+        +'<td class="td-drag">⋮⋮</td>'
+        +'<td class="td-group">'+esc(o.nombre||'—')+'<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">'+esc(o.codigoCG||'')+'</div></td>'
+        +'<td class="td-sub">'+esc(t.denominacion||'—')+'</td>'
+        +'<td><span class="badge-estado '+eCSS+'" style="font-size:10px;padding:2px 7px">'+esc(o.estado||'')+'</span></td>'
+        +'<td class="td-sub">'+esc(o.segmento||'—')+'</td>'
+        +'<td class="td-sub">'+esc(o.ciudad||'—')+'</td>'
+        +'<td class="td-sub">'+esc(o.constructora||'').split(' ').slice(0,2).join(' ')+'</td>'
+        +'<td class="td-attr" style="text-align:center">'+(t.pisos||'—')+'</td>'
+        +'<td class="td-attr" style="text-align:center">'+(t.subterraneos||'—')+'</td>'
+        +'<td class="td-attr" style="text-align:center">'+deptosTorre(t)+'</td>'
+        +'<td class="td-mono" style="text-align:right">'+(t.superficieTotal?(parseFloat(t.superficieTotal)||0).toLocaleString('es-CL'):'—')+'</td>'
+        +'<td class="td-mono" style="text-align:right">'+(o.superficiePlaca?(parseFloat(o.superficiePlaca)||0).toLocaleString('es-CL'):'—')+'</td>'
+        +'<td class="td-mono" style="text-align:center">'+(o.plazoOferta||'—')+'</td>'
+        +'<td class="td-mono" style="text-align:center">'+(pc!==null?pc:'—')+'</td>'
+        +'<td class="td-mono" style="text-align:center">'+(pr!==null?pr:'—')+'</td>'
+        +'<td><button class="card-btn-prim" style="height:24px;padding:0 10px;font-size:11px" onclick="abrirObra(\''+oid+'\',event)">Abrir</button></td>'
+        +'</tr>');
+    });
+  });
+  tbody.innerHTML=rows.join('');
+  // Re-attach sort listeners
+  document.querySelectorAll('.dt-th').forEach(function(th){
+    th.onclick=null;
+    th.addEventListener('click',function(e){
+      if(!e.target.classList.contains('col-resize'))dtSortBy(th);
+    });
+  });
+}
+
+function dtSortBy(th){
+  var col=parseInt(th.dataset.col);
+  if(dtSortCol===col){dtSortDir*=-1;}else{dtSortCol=col;dtSortDir=1;}
+  document.querySelectorAll('.dt-th').forEach(function(h){
+    h.classList.remove('sort-asc','sort-desc');
+    h.querySelector('.sort-icon').textContent='↕';
+  });
+  th.classList.add(dtSortDir===1?'sort-asc':'sort-desc');
+  th.querySelector('.sort-icon').textContent=dtSortDir===1?'↑':'↓';
+  var tbody=document.getElementById('dt-tbody');
+  var rows=Array.from(tbody.querySelectorAll('tr'));
+  rows.sort(function(a,b){
+    var aVal=a.cells[col+1]?a.cells[col+1].textContent.trim():'';
+    var bVal=b.cells[col+1]?b.cells[col+1].textContent.trim():'';
+    var aNum=parseFloat(aVal.replace(/[^0-9.]/g,''));
+    var bNum=parseFloat(bVal.replace(/[^0-9.]/g,''));
+    if(!isNaN(aNum)&&!isNaN(bNum))return(aNum-bNum)*dtSortDir;
+    return aVal.localeCompare(bVal,'es')*dtSortDir;
+  });
+  rows.forEach(function(r){tbody.appendChild(r);});
+}
+
+function startResize(e,handle){
+  e.preventDefault();e.stopPropagation();
+  var th=handle.parentElement;
+  resizeData={th:th,startX:e.clientX,startW:th.offsetWidth};
+  handle.classList.add('resizing');
+  document.addEventListener('mousemove',doResize);
+  document.addEventListener('mouseup',stopResize);
+}
+function doResize(e){
+  if(!resizeData)return;
+  var newW=Math.max(60,resizeData.startW+(e.clientX-resizeData.startX));
+  resizeData.th.style.width=newW+'px';resizeData.th.style.minWidth=newW+'px';
+}
+function stopResize(){
+  if(resizeData){resizeData.th.querySelector('.col-resize').classList.remove('resizing');resizeData=null;}
+  document.removeEventListener('mousemove',doResize);document.removeEventListener('mouseup',stopResize);
+}
+
+/* ══ IMPORT EXCEL ══ */
+function importarExcel(){
+  closeMenu();
+  var input=document.createElement('input');
+  input.type='file';input.accept='.xlsx,.xls';
+  input.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    if(typeof XLSX==='undefined'){showToast('SheetJS no disponible','error');return;}
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var wb=XLSX.read(ev.target.result,{type:'binary'});
+        var ws=wb.Sheets[wb.SheetNames[0]];
+        var rows=XLSX.utils.sheet_to_json(ws);
+        var importadas=0;
+        rows.forEach(function(row){
+          var nombre=row['NOMBRE_OBRA']||row['nombre']||'';
+          var torre=row['TORRE']||row['torre']||'Edificio';
+          if(!nombre)return;
+          // Buscar obra existente o crear
+          var idCG=row['CG']||row['codigoCG']||'';
+          var o=_obras.find(function(x){return x.codigoCG===idCG&&idCG;});
+          if(!o){
+            o={id:genId(),nombre:nombre,codigoCG:idCG,
+              constructora:row['CONSTRUCTORA']||CONSTRUCTORAS[0],
+              ciudad:row['CIUDAD']||'',comuna:row['COMUNA']||'',
+              estado:row['ESTADO']||'Presupuesto',segmento:row['SEGMENTO']||'',
+              cantEdificios:parseInt(row['EDIFICIOS'])||1,
+              plataCompartida:row['PLACA_COMPARTIDA']==='Sí',
+              pisosPlacaEstacionamiento:0,
+              superficiePlaca:parseFloat(row['SUP_PLACA_M2'])||'',
+              plazoOferta:parseFloat(row['PLAZO_OFERTA'])||'',
+              inicioCont:row['INICIO_CONTRATO']||'',terminoCont:row['TERMINO_CONTRACTUAL']||'',
+              inicioAcor:row['INICIO_ACORDADO']||'',terminoAcor:row['TERMINO_ACORDADO']||'',
+              creadoEn:new Date().toISOString().slice(0,10),torres:[]};
+            _obras.push(o);importadas++;
+          }
+          // Agregar torre
+          var t={id:'t'+Date.now(),denominacion:torre,
+            pisos:parseInt(row['PISOS'])||0,
+            subterraneos:parseInt(row['SUBTERRANEOS'])||0,
+            nivelSalaMaquinas:0,
+            superficieTotal:parseFloat(row['SUP_TOTAL_M2'])||'',
+            superficieSubterraneos:parseFloat(row['SUP_SUB_M2'])||'',
+            superficiePisoTipo:parseFloat(row['SUP_PISO_TIPO_M2'])||'',
+            cantDeptosTipo:parseInt(row['DEPTOS_PISO'])||0,
+            departamentos:[]};
+          o.torres.push(t);
+        });
+        renderGrilla();
+        showToast('Importadas: '+importadas+' obras','success');
+      }catch(err){showToast('Error al leer Excel: '+err.message,'error');}
+    };
+    reader.readAsBinaryString(file);
+  };
+  input.click();
+}
+
+/* ══ IMPORT JSON ══ */
+function importarJSON(){
+  closeMenu();
+  var input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        var lista=Array.isArray(data)?data:(data.obras||[data]);
+        var cnt=0;
+        lista.forEach(function(o){
+          if(!o.id)o.id=genId();
+          var idx=_obras.findIndex(function(x){return x.id===o.id;});
+          if(idx>=0)_obras[idx]=o;else{_obras.push(o);cnt++;}
+        });
+        renderGrilla();
+        showToast('JSON importado: '+lista.length+' obras','success');
+      }catch(err){showToast('Error JSON: '+err.message,'error');}
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+/* ══ EXPORT JSON ══ */
+function exportarJSON(){
+  closeMenu();
+  var json=JSON.stringify({obras:_obras},null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='RegistroObras_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();URL.revokeObjectURL(url);
+  showToast('JSON exportado','success');
+}
+
+/* ══ CONFIRMAR ELIMINAR ══ */
+function confirmarEliminar(id,nombre,e){
+  if(e)e.stopPropagation();
+  showModal('Eliminar obra','¿Eliminar "'+nombre+'"? Esta acción no se puede deshacer.',function(){
+    eliminarObra(id)
+      .then(function(){ showToast('Obra eliminada.','warning'); })
+      .catch(function(err){ showToast('Error al eliminar: '+err.message,'error'); });
+  });
+}
+
+/* ══ DETALLE ══ */
+function abrirObra(id,e){
+  if(e)e.stopPropagation();
+  var o=_obras.find(function(x){return x.id===id;});
+  if(!o)return;
+  _obraActiva=o;renderDetalle();showScreen('obra');
+  obraTab('panel-general',document.querySelector('.obra-tab'));
+}
+
+
+function editarObraActiva(){if(_obraActiva)iniciarWizardEdicion(_obraActiva.id);}
+function editarDesdeCard(id,e){if(e)e.stopPropagation();var o=_obras.find(function(x){return x.id===id;});if(!o)return;_obraActiva=o;iniciarWizardEdicion(id);}
+
+
+
+
+
+function switchTorreDeptos(idx,btn){
+  document.querySelectorAll('.torre-depto-panel').forEach(function(p,i){p.style.display=i===idx?'block':'none';});
+  document.querySelectorAll('#panel-deptos .edificio-tab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+}
+
+
+
+
+function guardarPO(val){
+  if(!_obraActiva)return;
+  _obraActiva.plazoOferta=parseFloat(val)||null;
+  var o=_obras.find(function(x){return x.id===_obraActiva.id;});
+  if(o)o.plazoOferta=_obraActiva.plazoOferta;
+  guardarObra(Object.assign({},_obraActiva)).then(function(){showToast('Plazo oferta guardado','success');}).catch(function(){});
+}
+function guardarFecha(campo,val){
+  if(!_obraActiva)return;
+  _obraActiva[campo]=val;
+  var o=_obras.find(function(x){return x.id===_obraActiva.id;});
+  if(o)o[campo]=val;
+  var pc=mesesEntre(_obraActiva.inicioCont,_obraActiva.terminoCont);
+  var pr=mesesEntre(_obraActiva.inicioAcor,_obraActiva.terminoAcor);
+  var epc=document.getElementById('pc-num');var epr=document.getElementById('pr-num');
+  if(epc)epc.textContent=pc!==null?pc:'—';
+  if(epr)epr.textContent=pr!==null?pr:'—';
+  guardarObra(Object.assign({},_obraActiva)).catch(function(){});
+}
+
+/* ══ WIZARD ══ */
+function defaultTorre(n){
+  return {id:'t'+Date.now()+(n||0),denominacion:'',pisos:0,subterraneos:0,nivelSalaMaquinas:0,
+    superficieTotal:'',superficieSubterraneos:'',superficiePisoTipo:'',cantDeptosTipo:0,departamentos:[]};
+}
+function cfDefaults(){
+  return {id:genId(),nombre:'',codigoCG:'',constructora:CONSTRUCTORAS[0],ciudad:CIUDADES[4],comuna:'Santiago Centro',
+    estado:'Presupuesto',segmento:'Parque',cantEdificios:1,
+    plataCompartida:false,pisosPlacaEstacionamiento:0,superficiePlaca:'',
+    plazoOferta:'',inicioCont:'',terminoCont:'',inicioAcor:'',terminoAcor:'',
+    observaciones:'',torres:[defaultTorre(0)]};
+}
+function iniciarWizardNuevo(){_cf=cfDefaults();_cfEdit=false;_cfPaso=1;_cfEdifActivo=0;document.getElementById('wiz-btn-guardar').textContent='✓ Crear Obra';wizRender();showScreen('wizard');}
+function iniciarWizardEdicion(id){
+  var o=_obras.find(function(x){return x.id===id;});if(!o)return;
+  _cf=JSON.parse(JSON.stringify(o));_cfEdit=true;_cfPaso=1;_cfEdifActivo=0;
+  document.getElementById('wiz-btn-guardar').textContent='✓ Guardar Cambios';
+  wizRender();showScreen('wizard');
+}
+function wizCancelar(){showScreen(_cfEdit?'obra':'inicio');}
+function wizAnterior(){if(_cfPaso>1){_cfPaso--;wizRender();}}
+function wizSiguiente(){if(_cfPaso<WIZ_PASOS){_cfPaso++;wizRender();}}
+function wizGuardar(){
+  guardarObra(Object.assign({},_cf))
+    .then(function(){
+      showToast('Obra "'+_cf.nombre+'" '+(_cfEdit?'actualizada':'creada')+'.','success');
+      // Siempre volver al inicio; si editaba, la grilla ya tiene los datos actualizados
+      showScreen('inicio');
+    })
+    .catch(function(){});
+}
+
+function wizRender(){
+  document.querySelectorAll('.paso-n').forEach(function(el){
+    var n=parseInt(el.dataset.paso);
+    el.className='paso-n'+(n===_cfPaso?' on':n<_cfPaso?' done':'');
+    el.textContent=n<_cfPaso?'✓':n;
+  });
+  document.getElementById('wiz-step-lbl').textContent='Paso '+_cfPaso+' de '+WIZ_PASOS;
+  document.getElementById('wiz-btn-anterior').style.display=_cfPaso>1?'':'none';
+  document.getElementById('wiz-btn-siguiente').style.display=_cfPaso<WIZ_PASOS?'':'none';
+  document.getElementById('wiz-btn-guardar').style.display=_cfPaso===WIZ_PASOS?'':'none';
+  var fns=[null,wizPaso1,wizPaso2,wizPaso3,wizPaso4];
+  document.getElementById('wiz-body').innerHTML=fns[_cfPaso]();
+  wizBind();
+}
+
+/* ── Paso 1 ── */
+function wizPaso1(){
+  var ciudadOpts=CIUDADES.map(function(c){
+    return '<option value="'+esc(c)+'"'+(c===_cf.ciudad?' selected':'')+'>'+esc(c)+'</option>';
+  }).join('');
+  // Ciudad custom
+  var ciudadCustom='<option value="__nueva__">+ Agregar ciudad...</option>';
+  var comunas=getComunas(_cf.ciudad);
+  var comunaOpts=comunas.map(function(c){return '<option value="'+esc(c)+'"'+(c===_cf.comuna?' selected':'')+'>'+esc(c)+'</option>';}).join('');
+  comunaOpts+='<option value="__nueva__">+ Agregar comuna...</option>';
+  return '<div class="wiz-section"><div class="wiz-section-title">Identificación</div>'
+    +'<div class="field-grid-2">'
+    +fi('cf-nombre','Nombre del proyecto','text',_cf.nombre,'Ej: Parque Los Castaños',true)
+    +fi('cf-codigoCG','Código CG','text',_cf.codigoCG,'Ej: CG-042')
+    +fsel('cf-constructora','Constructora',CONSTRUCTORAS,_cf.constructora,true)
+    +fsel('cf-estado','Estado',ESTADOS,_cf.estado,true)
+    +'<div><label class="field-label">Ciudad <span class="req">*</span></label>'
+    +'<select id="cf-ciudad" class="field-input"><'+ciudadOpts+ciudadCustom+'</select></div>'
+    +'<div id="bloque-comuna"><label class="field-label">Comuna</label>'
+    +'<select id="cf-comuna" class="field-input">'+comunaOpts+'</select></div>'
+    +fsel('cf-segmento','Segmento',SEGMENTOS,_cf.segmento)
+    +fi('cf-cantEdif','Cantidad de torres / edificios','number',_cf.cantEdificios,'1',true)
+    +'</div></div>'
+    +((_cf.cantEdificios||1)>1?
+      '<div class="wiz-section"><div class="wiz-section-title">Placa de estacionamiento</div>'
+      +'<div class="wiz-hint">💡 Si todas las torres comparten una misma placa, márcalo e ingresa los datos aquí. Si no, ingresa la placa de cada torre en el paso siguiente.</div>'
+      +'<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-bottom:12px">'
+      +'<input type="checkbox" id="cf-placa-comp" '+(_cf.plataCompartida?'checked':'')+' style="accent-color:var(--accent);width:16px;height:16px"> Placa compartida entre todas las torres</label>'
+      +(_cf.plataCompartida?
+        '<div class="field-grid-2">'
+        +fi('cf-pisosPlaca','Pisos placa','number',_cf.pisosPlacaEstacionamiento,'2')
+        +fi('cf-supPlaca','Superficie placa (m²)','number',_cf.superficiePlaca,'4200')
+        +'</div>'
+      :'')
+      +'</div>'
+    :'')
+    +'<div class="wiz-section"><div class="wiz-section-title">Observaciones</div>'
+    +'<label class="field-label">Notas adicionales</label>'
+    +'<textarea id="cf-obs" class="field-input" rows="2" placeholder="Notas...">'+esc(_cf.observaciones||'')+'</textarea>'
+    +'</div>';
+}
+
+/* ── Paso 2 ── */
+function wizPaso2(){
+  var cant=parseInt(_cf.cantEdificios)||1;
+  while(_cf.torres.length<cant)_cf.torres.push(defaultTorre(_cf.torres.length));
+  if(_cf.torres.length>cant)_cf.torres=_cf.torres.slice(0,cant);
+  var tabs=_cf.torres.map(function(t,i){
+    return '<button class="edificio-tab'+(_cfEdifActivo===i?' on':'')+'" onclick="cfSwEd('+i+')">'+esc(t.denominacion||'Torre '+(i+1))+'</button>';
+  }).join('');
+  return '<div class="wiz-section"><div class="wiz-section-title">Geometría por torre</div>'
+    +'<div class="edificio-tab-bar">'+tabs+'</div>'
+    +'<div id="edif-geo">'+edifGeoHTML(_cfEdifActivo)+'</div></div>';
+}
+
+function cfSwEd(idx){bindEdif();_cfEdifActivo=idx;
+  document.querySelectorAll('#wiz-body .edificio-tab').forEach(function(b,i){b.classList.toggle('on',i===idx);});
+  document.getElementById('edif-geo').innerHTML=edifGeoHTML(idx);bindEdif();
+}
+
+/* ── Paso 3 ── */
+function wizPaso3(){
+  var tabs=_cf.torres.map(function(t,i){
+    return '<button class="edificio-tab'+(_cfEdifActivo===i?' on':'')+'" onclick="cfSwDep('+i+')">'+esc(t.denominacion||'Torre '+(i+1))+'</button>';
+  }).join('');
+  return '<div class="wiz-section"><div class="wiz-section-title">Departamentos por torre</div>'
+    +'<div class="edificio-tab-bar">'+tabs+'</div>'
+    +'<div id="edif-dep">'+edifDepHTML(_cfEdifActivo)+'</div></div>';
+}
+
+function cfSwDep(idx){
+  _cfEdifActivo=idx;
+  document.querySelectorAll('#wiz-body .edificio-tab').forEach(function(b,i){b.classList.toggle('on',i===idx);});
+  document.getElementById('edif-dep').innerHTML=edifDepHTML(idx);
+  bindDep(idx);actualizarTot(idx);
+}
+function togDep(ti,piso,depto){
+  var t=_cf.torres[ti];if(!t)return;
+  var e=t.departamentos.find(function(d){return d.piso===piso;});if(!e)return;
+  if(!e.excluidos)e.excluidos=[];
+  var i=e.excluidos.indexOf(depto);
+  if(i>=0)e.excluidos.splice(i,1);else e.excluidos.push(depto);
+  var chips=(e.deptos||[]).map(function(d){
+    var excl=e.excluidos.includes(d);
+    return '<span class="chip-d'+(excl?' chip-excl':'')+'" onclick="togDep('+ti+','+piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+(excl?' ✕':'')+'</span>';
+  }).join('');
+  var prev=document.getElementById('pr-'+ti+'-'+piso);if(prev)prev.innerHTML=chips;
+  var act=(e.deptos||[]).filter(function(d){return !e.excluidos.includes(d);}).length;
+  var lbl=document.getElementById('ac-'+ti+'-'+piso);if(lbl)lbl.textContent=act+' act.';
+  actualizarTot(ti);
+}
+function aplicarTipo(idx){
+  var t=_cf.torres[idx];if(!t)return;
+  var inp=document.getElementById('cf-tipo-'+idx);
+  var cant=parseInt(inp?inp.value:0)||0;t.cantDeptosTipo=cant;
+  t.departamentos.forEach(function(e){
+    var prev=e.excluidos||[];e.cantidad=cant;e.deptos=[];
+    for(var i=1;i<=cant;i++)e.deptos.push(String(e.piso*100+i));
+    e.excluidos=prev.filter(function(d){return e.deptos.includes(d);});
+    var inp2=document.querySelector('.input-cant[data-ti="'+idx+'"][data-piso="'+e.piso+'"]');
+    if(inp2)inp2.value=cant;
+    var chips=(e.deptos||[]).map(function(d){
+      var excl=e.excluidos.includes(d);
+      return '<span class="chip-d'+(excl?' chip-excl':'')+'" onclick="togDep('+idx+','+e.piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+(excl?' ✕':'')+'</span>';
+    }).join('');
+    var p=document.getElementById('pr-'+idx+'-'+e.piso);if(p)p.innerHTML=chips;
+    var act=(e.deptos||[]).filter(function(d){return !e.excluidos.includes(d);}).length;
+    var l=document.getElementById('ac-'+idx+'-'+e.piso);if(l)l.textContent=act+' act.';
+  });
+  actualizarTot(idx);
+}
+function actualizarTot(idx){
+  var t=_cf.torres[idx];if(!t)return;
+  var total=(t.departamentos||[]).reduce(function(s,p){
+    return s+(p.deptos||[]).filter(function(d){return !(p.excluidos||[]).includes(d);}).length;
+  },0);
+  var el=document.getElementById('tot-'+idx);if(el)el.textContent='Total activos: '+total+' departamentos';
+}
+
+/* ── Paso 4 ── */
+function wizPaso4(){
+  var pc=mesesEntre(_cf.inicioCont,_cf.terminoCont);
+  var pr=mesesEntre(_cf.inicioAcor,_cf.terminoAcor);
+  var td=(_cf.torres||[]).reduce(function(s,t){return s+deptosTorre(t);},0);
+  var pisoMax=Math.max.apply(null,(_cf.torres||[]).map(function(t){return t.pisos||0;}).concat([0]));
+  return '<div class="wiz-section"><div class="wiz-section-title">Plazos</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">'
+    +'<div class="plazo-calc" style="border-left:3px solid var(--blue)"><div class="campo-label">Plazo oferta (meses)</div>'
+    +'<input class="plazo-oferta-input" type="number" step="0.5" min="0" id="cf-po" value="'+(_cf.plazoOferta||'')+'" placeholder="—"></div>'
+    +'<div class="plazo-calc" style="border-left:3px solid var(--accent)"><div class="campo-label">Plazo contrato</div>'
+    +'<div class="plazo-calc-num" id="wpc">'+(pc!==null?pc:'—')+'</div><div class="plazo-calc-lbl">meses · calculado</div></div>'
+    +'<div class="plazo-calc" style="border-left:3px solid var(--amber)"><div class="campo-label">Plazo rectificado</div>'
+    +'<div class="plazo-calc-num" id="wpr">'+(pr!==null?pr:'—')+'</div><div class="plazo-calc-lbl">meses · calculado</div></div></div>'
+    +'<div class="field-grid-2">'
+    +'<div><div class="campo-label">Inicio contrato</div><input type="date" class="field-input" id="cf-ic" value="'+(_cf.inicioCont||'')+'" onchange="cfActPl()"></div>'
+    +'<div><div class="campo-label">Término contractual</div><input type="date" class="field-input" id="cf-tc" value="'+(_cf.terminoCont||'')+'" onchange="cfActPl()"></div>'
+    +'<div><div class="campo-label">Inicio acordado</div><input type="date" class="field-input" id="cf-ia" value="'+(_cf.inicioAcor||'')+'" onchange="cfActPl()"></div>'
+    +'<div><div class="campo-label">Término acordado</div><input type="date" class="field-input" id="cf-ta" value="'+(_cf.terminoAcor||'')+'" onchange="cfActPl()"></div>'
+    +'</div></div>'
+    +'<div class="wiz-section"><div class="wiz-section-title">Resumen — '+esc(_cf.nombre||'Obra sin nombre')+'</div>'
+    +'<div class="field-grid-4" style="margin-bottom:12px">'
+    +cvR('Código CG',_cf.codigoCG||'—')+cvR('Estado',_cf.estado||'—')
+    +cvR('Segmento',_cf.segmento||'—')+cvR('Torres',(_cf.torres||[]).length)+'</div>'
+    +'<div class="field-grid-4">'
+    +cvR('Ciudad',_cf.ciudad||'—')+cvR('Pisos máx.',pisoMax)
+    +cvR('Total deptos',td)+cvR('Plazo oferta',_cf.plazoOferta?_cf.plazoOferta+' m':'—')
+    +'</div></div>';
+}
+function cfActPl(){
+  var ic=document.getElementById('cf-ic'),tc=document.getElementById('cf-tc');
+  var ia=document.getElementById('cf-ia'),ta=document.getElementById('cf-ta');
+  if(ic)_cf.inicioCont=ic.value;if(tc)_cf.terminoCont=tc.value;
+  if(ia)_cf.inicioAcor=ia.value;if(ta)_cf.terminoAcor=ta.value;
+  var pc=mesesEntre(_cf.inicioCont,_cf.terminoCont);
+  var pr=mesesEntre(_cf.inicioAcor,_cf.terminoAcor);
+  var epc=document.getElementById('wpc'),epr=document.getElementById('wpr');
+  if(epc)epc.textContent=pc!==null?pc:'—';if(epr)epr.textContent=pr!==null?pr:'—';
+}
+
+/* ── wizBind ── */
+function wizBind(){
+  if(_cfPaso===1){
+    bnd('cf-nombre','nombre');bnd('cf-codigoCG','codigoCG');
+    bndSel('cf-constructora','constructora');bndSel('cf-estado','estado');bndSel('cf-segmento','segmento');
+    var ec=document.getElementById('cf-cantEdif');
+    if(ec)ec.addEventListener('change',function(e){_cf.cantEdificios=parseInt(e.target.value)||1;});
+    var ep=document.getElementById('cf-pisosPlaca');
+    if(ep)ep.addEventListener('input',function(e){_cf.pisosPlacaEstacionamiento=parseInt(e.target.value)||0;});
+    var es=document.getElementById('cf-supPlaca');
+    if(es)es.addEventListener('input',function(e){_cf.superficiePlaca=parseFloat(e.target.value)||'';});
+    var epc=document.getElementById('cf-placa-comp');
+    if(epc)epc.addEventListener('change',function(e){
+      _cf.plataCompartida=e.target.checked;
+      // Re-render para mostrar/ocultar campos de placa
+      wizRender();
+    });
+    var eo=document.getElementById('cf-obs');
+    if(eo)eo.addEventListener('input',function(e){_cf.observaciones=e.target.value;});
+    // Ciudad con dependencia
+    var eCiudad=document.getElementById('cf-ciudad');
+    var eComuna=document.getElementById('cf-comuna');
+    if(eCiudad){
+      eCiudad.addEventListener('change',function(e){
+        var val=e.target.value;
+        if(val==='__nueva__'){
+          var nueva=prompt('Nombre de la nueva ciudad:');if(!nueva)return;
+          nueva=nueva.trim();
+          if(!CIUDADES.includes(nueva)){CIUDADES.push(nueva);COMUNAS_MAP[nueva]=[nueva];}
+          // Rebuild select
+          eCiudad.innerHTML=CIUDADES.map(function(c){return '<option value="'+esc(c)+'"'+(c===nueva?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'<option value="__nueva__">+ Agregar ciudad...</option>';
+          _cf.ciudad=nueva;
+        } else {
+          _cf.ciudad=val;
+        }
+        if(eComuna){
+          var comunas=getComunas(_cf.ciudad);
+          _cf.comuna=buildComunaSelect(eComuna,_cf.ciudad,_cf.comuna);
+          // bind nueva after rebuild
+          eComuna.removeEventListener('change',eComuna._handler);
+          eComuna._handler=function(ev){handleComunaChange(ev.target.value,eComuna);};
+          eComuna.addEventListener('change',eComuna._handler);
+        }
+      });
+    }
+    if(eComuna){
+      eComuna._handler=function(ev){handleComunaChange(ev.target.value,eComuna);};
+      eComuna.addEventListener('change',eComuna._handler);
+    }
+  }
+  if(_cfPaso===2)bindEdif();
+  if(_cfPaso===3){bindDep(_cfEdifActivo);actualizarTot(_cfEdifActivo);}
+  if(_cfPaso===4){
+    var ep=document.getElementById('cf-po');
+    if(ep)ep.addEventListener('input',function(e){_cf.plazoOferta=parseFloat(e.target.value)||null;});
+  }
+}
+function handleComunaChange(val,eComuna){
+  if(val==='__nueva__'){
+    var nueva=prompt('Nombre de la nueva comuna:');if(!nueva)return;
+    nueva=nueva.trim();
+    var ciudad=_cf.ciudad;
+    if(!COMUNAS_MAP[ciudad])COMUNAS_MAP[ciudad]=[ciudad];
+    if(!COMUNAS_MAP[ciudad].includes(nueva))COMUNAS_MAP[ciudad].push(nueva);
+    _cf.comuna=nueva;
+    // Rebuild
+    var comunas=COMUNAS_MAP[ciudad];
+    eComuna.innerHTML=comunas.map(function(c){return '<option value="'+esc(c)+'"'+(c===nueva?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'<option value="__nueva__">+ Agregar comuna...</option>';
+    var bloque=document.getElementById('bloque-comuna');
+    if(bloque)bloque.style.display=comunas.length<=1?'none':'';
+  } else {
+    _cf.comuna=val;
+  }
+}
+
+function bnd(id,key){var el=document.getElementById(id);if(el)el.addEventListener('input',function(e){_cf[key]=e.target.value;});}
+function bndSel(id,key){var el=document.getElementById(id);if(el)el.addEventListener('change',function(e){_cf[key]=e.target.value;});}
+function bindEdif(){
+  var idx=_cfEdifActivo;var t=_cf.torres[idx];if(!t)return;
+  function b(id,key,num,flt){
+    var el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',function(e){
+      t[key]=flt?(parseFloat(e.target.value)||''):num?(parseInt(e.target.value)||0):e.target.value;
+      if(key==='denominacion'){
+        var tabs=document.querySelectorAll('#wiz-body .edificio-tab');
+        if(tabs[idx])tabs[idx].textContent=e.target.value||'Torre '+(idx+1);
+      }
+    });
+  }
+  b('cf-den','denominacion',false,false);b('cf-pisos','pisos',true,false);
+  b('cf-sub','subterraneos',true,false);b('cf-sala','nivelSalaMaquinas',true,false);
+  b('cf-placa','pisosPlacaEstacionamiento',true,false);
+  b('cf-supPlaca-torre','superficiePlacaTorre',false,true);
+  b('cf-stot','superficieTotal',false,true);b('cf-ssub','superficieSubterraneos',false,true);
+  b('cf-spiso','superficiePisoTipo',false,true);
+}
+function bindDep(idx){
+  document.querySelectorAll('.input-cant[data-ti="'+idx+'"]').forEach(function(inp){
+    inp.addEventListener('input',function(e){
+      var piso=parseInt(e.target.dataset.piso),cant=parseInt(e.target.value)||0;
+      var t=_cf.torres[idx];if(!t)return;
+      var entry=t.departamentos.find(function(d){return d.piso===piso;});
+      if(entry){
+        var prev=entry.excluidos||[];entry.cantidad=cant;entry.deptos=[];
+        for(var i=1;i<=cant;i++)entry.deptos.push(String(piso*100+i));
+        entry.excluidos=prev.filter(function(d){return entry.deptos.includes(d);});
+        var chips=(entry.deptos||[]).map(function(d){
+          var excl=entry.excluidos.includes(d);
+          return '<span class="chip-d'+(excl?' chip-excl':'')+'" onclick="togDep('+idx+','+piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+(excl?' ✕':'')+'</span>';
+        }).join('');
+        var prv=document.getElementById('pr-'+idx+'-'+piso);if(prv)prv.innerHTML=chips;
+        var act=entry.deptos.filter(function(d){return !entry.excluidos.includes(d);}).length;
+        var lbl=document.getElementById('ac-'+idx+'-'+piso);if(lbl)lbl.textContent=act+' act.';
+      }
+      actualizarTot(idx);
+    });
+  });
+}
+
+/* ══ EXCEL EXPORT ══ */
+function exportarExcel(){
+  if(typeof XLSX==='undefined'){showToast('SheetJS no disponible','error');return;}
+  var rows=[];
+  _obras.forEach(function(o){
+    var pc=mesesEntre(o.inicioCont,o.terminoCont);
+    var pr=mesesEntre(o.inicioAcor,o.terminoAcor);
+    (o.torres||[]).forEach(function(t){
+      rows.push({CG:o.codigoCG||'',NOMBRE_OBRA:o.nombre||'',TORRE:t.denominacion||'',
+        CONSTRUCTORA:o.constructora||'',CIUDAD:o.ciudad||'',COMUNA:o.comuna||'',
+        ESTADO:o.estado||'',SEGMENTO:o.segmento||'',EDIFICIOS:o.cantEdificios||1,
+        PISOS:t.pisos||0,SUBTERRANEOS:t.subterraneos||0,
+        DEPARTAMENTOS:deptosTorre(t),DEPTOS_PISO:t.cantDeptosTipo||0,
+        SUP_TOTAL_M2:parseFloat(t.superficieTotal)||0,
+        SUP_SUB_M2:parseFloat(t.superficieSubterraneos)||0,
+        SUP_PLACA_M2:parseFloat(o.superficiePlaca)||0,
+        SUP_PISO_TIPO_M2:parseFloat(t.superficiePisoTipo)||0,
+        PLACA_COMPARTIDA:o.plataCompartida?'Sí':'No',
+        INICIO_CONTRATO:o.inicioCont||'',TERMINO_CONTRACTUAL:o.terminoCont||'',
+        INICIO_ACORDADO:o.inicioAcor||'',TERMINO_ACORDADO:o.terminoAcor||'',
+        PLAZO_CONTRATO:pc!==null?pc:'',PLAZO_RECTIFICADO:pr!==null?pr:'',
+        PLAZO_OFERTA:o.plazoOferta||''});
+    });
+  });
+  var ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:10},{wch:28},{wch:16},{wch:36},{wch:14},{wch:16},{wch:14},{wch:10},
+    {wch:9},{wch:7},{wch:12},{wch:13},{wch:11},{wch:13},{wch:11},{wch:13},{wch:15},{wch:16},
+    {wch:16},{wch:20},{wch:16},{wch:18},{wch:15},{wch:17},{wch:13}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Registro Obras');
+  XLSX.writeFile(wb,'RegistroObras_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  showToast('Excel descargado','success');
+}
+
+
+
+/* ══ FILTROS TABLA ══ */
+var _filtros = { segmento:[], ciudad:[], comuna:[] };
+
+function buildFiltros(){
+  var seg={}, ciu={}, com={};
+  _obras.forEach(function(o){
+    var n = (o.torres||[]).length || 1;
+    if(o.segmento) seg[o.segmento]=(seg[o.segmento]||0)+n;
+    if(o.ciudad)   ciu[o.ciudad]=(ciu[o.ciudad]||0)+n;
+    if(o.comuna)   com[o.comuna]=(com[o.comuna]||0)+n;
+  });
+  renderFiltroGrupo('filtro-segmento', seg, 'segmento');
+  renderFiltroGrupo('filtro-ciudad',   ciu, 'ciudad');
+  renderFiltroGrupo('filtro-comuna',   com, 'comuna');
+}
+
+function renderFiltroGrupo(elId, counts, key){
+  var el=document.getElementById(elId); if(!el)return;
+  var sorted=Object.keys(counts).sort(function(a,b){ return a.localeCompare(b,'es'); });
+  el.innerHTML=sorted.map(function(val){
+    var active=_filtros[key].length===0||_filtros[key].includes(val);
+    var safeVal=val.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<label class="filtro-opcion">'
+      +'<input type="checkbox" '+(active?'checked':'')
+      +' onchange="toggleFiltro(\''+key+'\',\''+safeVal+'\')">'
+      +'<span title="'+esc(val)+'">'+esc(val)+'</span>'
+      +'<span class="filtro-count">'+counts[val]+'</span>'
+      +'</label>';
+  }).join('');
+}
+
+function getAllVals(key){
+  var vals={};
+  _obras.forEach(function(o){ var v=o[key]; if(v) vals[v]=1; });
+  return Object.keys(vals);
+}
+
+function toggleFiltro(key, val){
+  var arr=_filtros[key];
+  var allVals=getAllVals(key);
+  if(arr.length===0){
+    _filtros[key]=allVals.filter(function(v){ return v!==val; });
+  } else {
+    var idx=arr.indexOf(val);
+    if(idx>=0) arr.splice(idx,1); else arr.push(val);
+    if(arr.length===allVals.length) _filtros[key]=[];
+  }
+  renderTablaFiltrada();
+  // Rebuild to update checkboxes
+  buildFiltros();
+}
+
+function limpiarFiltros(){
+  _filtros={segmento:[],ciudad:[],comuna:[]};
+  buildFiltros();
+  renderTablaFiltrada();
+}
+
+function obraPassesFiltro(o){
+  if(_filtros.segmento.length && !_filtros.segmento.includes(o.segmento)) return false;
+  if(_filtros.ciudad.length   && !_filtros.ciudad.includes(o.ciudad))     return false;
+  if(_filtros.comuna.length   && !_filtros.comuna.includes(o.comuna))     return false;
+  return true;
+}
+
+function renderTablaFiltrada(){
+  var tbody=document.getElementById('dt-tbody'); if(!tbody)return;
+  var rows=[];
+  _obras.forEach(function(o){
+    if(!obraPassesFiltro(o)) return;
+    var pc=mesesEntre(o.inicioCont,o.terminoCont);
+    var pr=mesesEntre(o.inicioAcor,o.terminoAcor);
+    (o.torres||[]).forEach(function(t){
+      var eCSS=ESTADO_CSS[o.estado]||'badge-presupuesto';
+      var oid=escQ(o.id);
+      rows.push('<tr onclick="abrirObra(\''+oid+'\',null)" style="cursor:pointer">'
+        +'<td class="td-drag">⋮⋮</td>'
+        +'<td class="td-group">'+esc(o.nombre||'—')+'<div style="font-size:10px;color:var(--text3);font-family:var(--mono)">'+esc(o.codigoCG||'')+'</div></td>'
+        +'<td class="td-sub">'+esc(t.denominacion||'—')+'</td>'
+        +'<td><span class="badge-estado '+eCSS+'" style="font-size:10px;padding:2px 7px">'+esc(o.estado||'')+'</span></td>'
+        +'<td class="td-sub">'+esc(o.segmento||'—')+'</td>'
+        +'<td class="td-sub">'+esc(o.ciudad||'—')+'</td>'
+        +'<td class="td-sub">'+(o.constructora||'').split(' ').slice(0,2).join(' ')+'</td>'
+        +'<td class="td-attr" style="text-align:center">'+(t.pisos||'—')+'</td>'
+        +'<td class="td-attr" style="text-align:center">'+(t.subterraneos||'—')+'</td>'
+        +'<td class="td-attr" style="text-align:center">'+deptosTorre(t)+'</td>'
+        +'<td class="td-mono" style="text-align:right">'+(t.superficieTotal?(parseFloat(t.superficieTotal)||0).toLocaleString('es-CL'):'—')+'</td>'
+        +'<td class="td-mono" style="text-align:right">'+(o.superficiePlaca?(parseFloat(o.superficiePlaca)||0).toLocaleString('es-CL'):'—')+'</td>'
+        +'<td class="td-mono" style="text-align:center">'+(o.plazoOferta||'—')+'</td>'
+        +'<td class="td-mono" style="text-align:center">'+(pc!==null?pc:'—')+'</td>'
+        +'<td class="td-mono" style="text-align:center">'+(pr!==null?pr:'—')+'</td>'
+        +'<td><button class="card-btn-prim" style="height:20px;padding:0 8px;font-size:10px" onclick="abrirObra(\''+oid+'\',event)">Abrir</button></td>'
+        +'</tr>');
+    });
+  });
+  tbody.innerHTML=rows.join('');
+  document.querySelectorAll('.dt-th').forEach(function(th){
+    th.onclick=null;
+    th.addEventListener('click',function(e){
+      if(!e.target.classList.contains('col-resize')) dtSortBy(th);
+    });
+  });
+}
+
+
+/* ══ INIT ══ */
+initMock();
+
+
+/* ══ INIT ══ */
+initMock();
+
+
+
+
+/* ════════════════════════════════════════════════
+   PATCHES — applied over existing JS
+   ════════════════════════════════════════════════ */
+
+/* ── TIPOLOGÍA helpers ── */
+var DORMITORIOS = [1,2,3,4];
+var BANOS       = [1,2,3];
+var COCINAS     = ['CK','CC']; // kitchenette / cerrada
+
+function buildTipologiaOpts(valActual){
+  var opts = [''];
+  DORMITORIOS.forEach(function(d){
+    BANOS.forEach(function(b){
+      COCINAS.forEach(function(c){
+        opts.push(d+'D+'+b+'B+'+c);
+      });
+    });
+  });
+  return opts.map(function(v){
+    return '<option value="'+v+'"'+(v===valActual?' selected':'')+'>'+( v||'— sin tipología —')+'</option>';
+  }).join('');
+}
+
+function parseTipologia(str){
+  // '2D+1B+CK' -> {d:2,b:1,c:'CK'}
+  if(!str) return null;
+  var m = str.match(/(\d+)D\+(\d+)B\+(CK|CC)/);
+  return m ? {d:parseInt(m[1]),b:parseInt(m[2]),c:m[3]} : null;
+}
+
+/* ── CARD render (fixed schema) ── */
+function renderGrilla(){
+  var g=document.getElementById('grilla-obras');
+  var v=document.getElementById('estado-vacio');
+  var c=document.getElementById('ini-conteo');
+  c.textContent=_obras.length?_obras.length+' obra'+(_obras.length!==1?'s':''):'';
+  if(!_obras.length){g.innerHTML='';v.style.display='flex';return;}
+  v.style.display='none';
+  g.innerHTML=_obras.map(function(o){
+    var td=deptosObra(o);
+    var eCSS=ESTADO_CSS[o.estado]||'badge-presupuesto';
+    var oid=escQ(o.id), onombre=escQ(o.nombre||'');
+    function row(label,val){
+      return '<div class="card-row"><span class="card-row-label">'+label+'</span>'
+        +'<span class="card-row-val'+(val?'':' empty')+'">'+esc(val||'—')+'</span></div>';
+    }
+    return '<div class="card" data-id="'+esc(o.id)+'">'
+      +'<button class="card-close" title="Eliminar" onclick="confirmarEliminar(\''+oid+'\',\''+onombre+'\',event)">✕</button>'
+      +'<div class="card-title">'+esc(o.nombre||'—')+'</div>'
+      +'<div class="card-sub" style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:8px">'+esc(o.codigoCG||'—')+'</div>'
+      +'<div class="card-divider"></div>'
+      +row('Constructora', o.constructora)
+      +row('Segmento', o.segmento)
+      +row('Ciudad / Comuna', [o.ciudad,o.comuna].filter(Boolean).join(' · '))
+      +'<div class="card-divider"></div>'
+      +'<div class="card-row" style="margin-bottom:3px"><span class="badge-estado '+eCSS+'" style="font-size:10px;padding:2px 8px">'+esc(o.estado||'—')+'</span></div>'
+      +'<div class="card-divider"></div>'
+      +row('Pisos', maxPisos(o) ? maxPisos(o)+' pisos' : null)
+      +row('Deptos', td ? td+' deptos' : null)
+      +row('Plazo oferta', o.plazoOferta ? o.plazoOferta+' meses' : null)
+      +'<div class="card-footer" style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
+      +'<span class="card-date" style="font-size:10px;color:var(--text3)">'+esc(o.codigoCG||'')+'</span>'
+      +'<div style="display:flex;gap:6px">'
+      +'<button class="card-btn-sec" onclick="editarDesdeCard(\''+oid+'\',event)" title="Editar">⚙</button>'
+      +'<button class="card-btn-prim" onclick="abrirObra(\''+oid+'\',event)">Abrir →</button>'
+      +'</div></div></div>';
+  }).join('');
+  g.querySelectorAll('.card').forEach(function(card){
+    card.addEventListener('click',function(){abrirObra(card.dataset.id,null);});
+  });
+  if(_vista==='tabla') renderTabla();
+}
+
+/* ── Panel general (compact table + estado editable) ── */
+function renderPanelGeneral(){
+  var o=_obraActiva;
+  var td=deptosObra(o);
+  var eCSS=ESTADO_CSS[o.estado]||'badge-presupuesto';
+
+  function tr(label,val){
+    return '<tr><td>'+label+'</td><td>'+(val||'<span style="color:var(--text3);font-style:italic">—</span>')+'</td></tr>';
+  }
+  function trBadge(label,val,css){
+    return '<tr><td>'+label+'</td><td><span class="badge-estado '+css+'" style="font-size:11px">'+esc(val)+'</span></td></tr>';
+  }
+
+  // Build towers summary
+  var torresRows = (o.torres||[]).map(function(t,i){
+    var den = t.denominacion || (o.torres.length===1 ? 'Edificio' : 'Torre '+(i+1));
+    return '<tr><td>'+esc(den)+'</td>'
+      +'<td>'+esc(t.pisos||'—')+' pisos · '+(t.subterraneos||0)+' sub. · SM N'+(t.nivelSalaMaquinas||'—')+'</td>'
+      +'</tr>';
+  }).join('');
+
+  var supRows = (o.torres||[]).map(function(t,i){
+    var den = t.denominacion || (o.torres.length===1 ? '' : 'Torre '+(i+1));
+    return '<tr><td>'+(den?esc(den)+' — ':'')+'Total</td><td>'+(t.superficieTotal||0).toLocaleString('es-CL')+' m²</td></tr>'
+      +'<tr><td>'+(den?esc(den)+' — ':'')+'Subterráneos</td><td>'+(t.superficieSubterraneos||0).toLocaleString('es-CL')+' m²</td></tr>'
+      +'<tr><td>'+(den?esc(den)+' — ':'')+'Piso tipo</td><td>'+(t.superficiePisoTipo||0).toLocaleString('es-CL')+' m²</td></tr>';
+  }).join('');
+
+  document.getElementById('obra-general').innerHTML=
+    '<div class="sec-card">'
+    // Estado editable
+    +'<div class="det-section-hdr">Estado</div>'
+    +'<table class="det-table">'
+    +trBadge('Estado actual', o.estado||'—', eCSS)
+    +'</table>'
+    +'<div class="estado-selector">'
+    +ESTADOS.map(function(s){
+      var on=s===o.estado;
+      var cls=on?('on-'+{Presupuesto:'presupuesto','En ejecución':'ejecucion',Finalizada:'finalizada'}[s]):'';
+      return '<button class="estado-btn '+cls+'" onclick="cambiarEstado(\''+escQ(o.id)+'\',\''+escQ(s)+'\')">'+esc(s)+'</button>';
+    }).join('')
+    +'</div>'
+    +'</div>'
+
+    +'<div class="sec-card">'
+    +'<div class="det-section-hdr">Identificación</div>'
+    +'<table class="det-table">'
+    +tr('Nombre', esc(o.nombre))
+    +tr('Código CG', esc(o.codigoCG))
+    +tr('Constructora', esc(o.constructora))
+    +tr('Segmento', esc(o.segmento))
+    +tr('Ciudad', esc(o.ciudad))
+    +tr('Comuna', esc(o.comuna))
+    +'</table>'
+    +'</div>'
+
+    +'<div class="sec-card">'
+    +'<div class="det-section-hdr">Torres / Edificios</div>'
+    +'<table class="det-table"><thead><tr><th style="font-size:10px;color:var(--text3);background:var(--surface2);padding:4px 10px">Torre</th><th style="font-size:10px;color:var(--text3);background:var(--surface2);padding:4px 10px">Geometría</th></tr></thead>'
+    +torresRows+'</table>'
+    +(o.plataCompartida?'<div style="margin-top:8px;font-size:12px;color:var(--text2)">Placa compartida: '+(o.pisosPlacaEstacionamiento||0)+' pisos · '+(parseFloat(o.superficiePlaca)||0).toLocaleString('es-CL')+' m²</div>':'')
+    +'<div class="det-section-hdr" style="margin-top:8px">Superficies</div>'
+    +'<table class="det-table">'+supRows
+    +tr('Placa estac.', (parseFloat(o.superficiePlaca)||0).toLocaleString('es-CL')+' m²')
+    +'</table>'
+    +'<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bg);display:flex;gap:20px;font-size:12px">'
+    +'<span><b>'+td+'</b> deptos activos</span>'
+    +'</div></div>'
+
+    +(o.observaciones?'<div class="sec-card"><div class="det-section-hdr">Observaciones</div><p style="font-size:13px;color:var(--text2);line-height:1.7">'+esc(o.observaciones)+'</p></div>':'');
+}
+
+/* ── Panel Listado de Deptos ── */
+function renderPanelListado(){
+  var o=_obraActiva;
+  var torres=o.torres||[];
+  if(!torres.length){document.getElementById('obra-listado').innerHTML='<div class="sec-card"><p style="color:var(--text3);font-size:13px">Sin torres.</p></div>';return;}
+
+  // Determine max deptos in any floor across all towers (for column alignment)
+  var maxD=0;
+  torres.forEach(function(t){
+    (t.departamentos||[]).forEach(function(p){if(p.deptos&&p.deptos.length>maxD)maxD=p.deptos.length;});
+  });
+
+  var html = torres.map(function(t,ti){
+    var den = t.denominacion||(torres.length===1?'Edificio':'Torre '+(ti+1));
+    var deptos=(t.departamentos||[]).filter(function(p){return p.cantidad>0;});
+    var totalAct=deptos.reduce(function(s,p){return s+(p.deptos||[]).filter(function(d){return!(p.excluidos||[]).includes(d);}).length;},0);
+    // Sort piso 1 first (ascending)
+    var sorted=deptos.slice().sort(function(a,b){return a.piso-b.piso;});
+    var rows=sorted.map(function(p){
+      var cells=(p.deptos||[]).map(function(d){
+        var excl=(p.excluidos||[]).includes(d);
+        return '<span class="depto-chip'+(excl?' excl':'')+'">'+d+'</span>';
+      });
+      // Pad to maxD
+      while(cells.length<maxD) cells.push('<span class="depto-chip empty">__</span>');
+      return '<div class="depto-piso-row"><span class="depto-piso-label">P'+p.piso+'</span>'
+        +'<div class="depto-chips-row">'+cells.join('')+'</div></div>';
+    }).join('');
+    var totalRow='<div style="font-size:11px;color:var(--text2);padding:6px 0 0 52px;font-style:italic">'+totalAct+' deptos activos</div>';
+    return '<div class="sec-card">'
+      +'<div class="det-section-hdr">'+esc(den)+'</div>'
+      +'<div class="depto-grid-wrap">'+rows+totalRow+'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('obra-listado').innerHTML=html;
+}
+
+/* ── Panel Atributos de Deptos ── */
+function renderPanelAtributos(){
+  var o=_obraActiva;
+  var torres=o.torres||[];
+  if(!torres.length){document.getElementById('obra-atributos').innerHTML='<div class="sec-card"><p style="color:var(--text3);font-size:13px">Sin torres.</p></div>';return;}
+
+  var html=torres.map(function(t,ti){
+    var den=t.denominacion||(torres.length===1?'Edificio':'Torre '+(ti+1));
+    var maxPiso=(t.pisos||0);
+    var depAtribs=t.depAtributos||{}; // {depNum: {tipo:'2D+1B+CK', sup:''}}
+    // Use piso tipo deptos
+    var pisotipo=null;
+    (t.departamentos||[]).forEach(function(p){
+      if(p.deptos&&p.deptos.length>0&&(!pisotipo||p.deptos.length>=pisotipo.deptos.length)) pisotipo=p;
+    });
+    var cols=pisotipo?pisotipo.deptos:[];
+    var totalDeptos=deptosTorre(t);
+
+    // Build summary: count by tipologia
+    var tipoCounts={};
+    cols.forEach(function(d){
+      var atr=(depAtribs[d])||{};
+      var tip=atr.tipo||'';
+      if(tip){tipoCounts[tip]=(tipoCounts[tip]||0)+1;}
+    });
+    var totalTipoRows=Object.keys(tipoCounts).sort().map(function(tip){
+      var parsed=parseTipologia(tip);
+      return '<tr>'
+        +'<td>'+esc(tip)+'</td>'
+        +'<td style="text-align:center">'+(parsed?parsed.d:'—')+'</td>'
+        +'<td style="text-align:center">'+(parsed?parsed.b:'—')+'</td>'
+        +'<td style="text-align:center">'+esc(parsed?parsed.c:'—')+'</td>'
+        +'<td style="text-align:right">'+tipoCounts[tip]+' / '+(tipoCounts[tip]*maxPiso)+'</td>'
+        +'</tr>';
+    }).join('');
+
+    var detRows=cols.map(function(d){
+      var atr=(depAtribs[d])||{tipo:'',sup:''};
+      return '<tr>'
+        +'<td style="font-family:var(--mono);font-weight:600">'+esc(d)+'</td>'
+        +'<td><select class="tipo-select" data-torre="'+ti+'" data-dep="'+esc(d)+'" onchange="guardarAtribDepto('+ti+',\''+d+'\',\'tipo\',this.value)">'+buildTipologiaOpts(atr.tipo)+'</select></td>'
+        +'<td><input class="tipo-input-sm" type="number" step="0.1" min="0" placeholder="m²" value="'+esc(atr.sup||'')+'" data-torre="'+ti+'" data-dep="'+esc(d)+'" onchange="guardarAtribDepto('+ti+',\''+d+'\',\'sup\',this.value)"></td>'
+        +'</tr>';
+    }).join('');
+
+    return '<div class="sec-card">'
+      +'<div class="det-section-hdr">'+esc(den)+' — Piso tipo</div>'
+      +'<table class="tipo-table">'
+      +'<thead><tr><th>N° Depto</th><th>Tipología</th><th>Sup. (m²)</th></tr></thead>'
+      +'<tbody>'+detRows+'</tbody>'
+      +'</table>'
+      +(totalTipoRows?'<div class="det-section-hdr" style="margin-top:12px">Resumen tipologías</div>'
+        +'<table class="tipo-table"><thead><tr><th>Tipología</th><th style="text-align:center">Dorm.</th><th style="text-align:center">Baños</th><th style="text-align:center">Cocina</th><th style="text-align:right">Piso tipo / Total edif.</th></tr></thead>'
+        +'<tbody>'+totalTipoRows+'</tbody>'
+        +'<tfoot><tr style="font-weight:600;background:var(--accent-l);color:var(--accent)">'
+        +'<td colspan="4">Total departamentos</td><td style="text-align:right">'+cols.length+' / '+totalDeptos+'</td></tr></tfoot>'
+        +'</table>':'')
+      +'</div>';
+  }).join('');
+  document.getElementById('obra-atributos').innerHTML=html;
+}
+
+function guardarAtribDepto(torreIdx,depNum,campo,val){
+  if(!_obraActiva)return;
+  var t=_obraActiva.torres[torreIdx];if(!t)return;
+  if(!t.depAtributos)t.depAtributos={};
+  if(!t.depAtributos[depNum])t.depAtributos[depNum]={};
+  t.depAtributos[depNum][campo]=val;
+  // Persist
+  var o=_obras.find(function(x){return x.id===_obraActiva.id;});
+  if(o&&o.torres[torreIdx]){
+    if(!o.torres[torreIdx].depAtributos)o.torres[torreIdx].depAtributos={};
+    if(!o.torres[torreIdx].depAtributos[depNum])o.torres[torreIdx].depAtributos[depNum]={};
+    o.torres[torreIdx].depAtributos[depNum][campo]=val;
+  }
+  guardarObra(Object.assign({},_obraActiva)).catch(function(){});
+}
+
+/* ── Panel Plazos (without estado) ── */
+function renderPanelPlazos(){
+  var o=_obraActiva;
+  var pc=mesesEntre(o.inicioCont,o.terminoCont);
+  var pr=mesesEntre(o.inicioAcor,o.terminoAcor);
+  document.getElementById('obra-plazos').innerHTML=
+    '<div class="sec-card"><div class="det-section-hdr">Plazos</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:10px 0">'
+    +'<div class="plazo-calc" style="border-left:3px solid var(--blue)">'
+    +'<div class="campo-label">Plazo oferta</div>'
+    +'<div style="display:flex;align-items:baseline;gap:6px">'
+    +'<input class="plazo-oferta-input" type="number" step="0.5" min="0" id="inp-po" value="'+(o.plazoOferta||'')+'" placeholder="—" onchange="guardarPO(this.value)">'
+    +'<span style="font-size:12px;color:var(--text2)">meses</span></div></div>'
+    +'<div class="plazo-calc" style="border-left:3px solid var(--accent)">'
+    +'<div class="campo-label">Plazo contrato</div>'
+    +'<div class="plazo-calc-num" id="pc-num">'+(pc!==null?pc:'—')+'</div>'
+    +'<div class="plazo-calc-lbl">meses calculados</div></div>'
+    +'<div class="plazo-calc" style="border-left:3px solid var(--amber)">'
+    +'<div class="campo-label">Plazo rectificado</div>'
+    +'<div class="plazo-calc-num" id="pr-num">'+(pr!==null?pr:'—')+'</div>'
+    +'<div class="plazo-calc-lbl">meses calculados</div></div>'
+    +'</div></div>'
+    +'<div class="sec-card"><div class="det-section-hdr">Fechas</div>'
+    +'<div class="field-grid-2" style="margin-top:10px">'
+    +'<div><div class="campo-label">Inicio contrato</div><input type="date" class="field-input" value="'+(o.inicioCont||'')+'" onchange="guardarFecha(\'inicioCont\',this.value)"></div>'
+    +'<div><div class="campo-label">Término contractual</div><input type="date" class="field-input" value="'+(o.terminoCont||'')+'" onchange="guardarFecha(\'terminoCont\',this.value)"></div>'
+    +'<div><div class="campo-label">Inicio acordado</div><input type="date" class="field-input" value="'+(o.inicioAcor||'')+'" onchange="guardarFecha(\'inicioAcor\',this.value)"></div>'
+    +'<div><div class="campo-label">Término acordado</div><input type="date" class="field-input" value="'+(o.terminoAcor||'')+'" onchange="guardarFecha(\'terminoAcor\',this.value)"></div>'
+    +'</div></div>';
+}
+
+/* ── renderDetalle dispatcher ── */
+function renderDetalle(){
+  renderPanelGeneral();
+  renderPanelListado();
+  renderPanelAtributos();
+  renderPanelPlazos();
+}
+
+/* ── Sidebar navigation ── */
+var _obraPanel='obra-general';
+function obraNavTo(panelId,el){
+  document.querySelectorAll('.obra-content > div[id^="obra-"]').forEach(function(p){p.style.display='none';});
+  var target=document.getElementById(panelId);
+  if(target) target.style.display='block';
+  _obraPanel=panelId;
+  document.querySelectorAll('.obra-nav-item').forEach(function(b){b.classList.remove('on');});
+  if(el) el.classList.add('on');
+}
+
+/* ── cambiarEstado (override — no panel plazos) ── */
+function cambiarEstado(id,estado){
+  var o=_obras.find(function(x){return x.id===id;});if(!o)return;
+  o.estado=estado;_obraActiva=o;
+  renderGrilla();renderPanelGeneral();
+  guardarObra(Object.assign({},o)).then(function(){showToast('Estado: '+estado,'success');}).catch(function(){});
+}
+
+/* ── Wizard paso 3 — chips aligned, piso 1 first ── */
+function edifDepHTML(idx){
+  var t=_cf.torres[idx];if(!t)return'';
+  var pisos=t.pisos||0;
+  if(pisos<1)return'<p style="color:var(--text2);font-size:13px">Vuelve al paso 2 e ingresa los pisos de esta torre.</p>';
+  var lista=[];for(var i=1;i<=pisos;i++)lista.push(i);
+  t.departamentos=(t.departamentos||[]).filter(function(d){return lista.includes(d.piso);});
+  var _defCant = t.cantDeptosTipo || 0;
+  lista.forEach(function(p){
+    if(!t.departamentos.find(function(d){return d.piso===p;}))
+      t.departamentos.push({piso:p,cantidad:_defCant,deptos:[],excluidos:[]});
+    var e=t.departamentos.find(function(d){return d.piso===p;});
+    if(!e.excluidos)e.excluidos=[];
+    // Auto-populate deptos array if cantidad set but deptos empty
+    if(e.cantidad>0 && (!e.deptos||e.deptos.length===0)){
+      e.deptos=[];
+      for(var _i=1;_i<=e.cantidad;_i++) e.deptos.push(String(p*100+_i));
+    }
+  });
+
+  // Determine max deptos for column alignment
+  var maxD=parseInt((document.getElementById('cf-tipo-'+idx)||{}).value||t.cantDeptosTipo)||0;
+  t.departamentos.forEach(function(p){if((p.deptos||[]).length>maxD)maxD=(p.deptos||[]).length;});
+
+  // Piso 1 first (ascending)
+  var rows=lista.map(function(p){
+    var e=t.departamentos.find(function(d){return d.piso===p;})||{cantidad:0,deptos:[],excluidos:[]};
+    var chips=(e.deptos||[]).map(function(d){
+      var excl=(e.excluidos||[]).includes(d);
+      return '<span class="wiz-chip'+(excl?' excl':'')+'" onclick="togDep('+idx+','+p+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+'</span>';
+    });
+    // Pad
+    while(chips.length<maxD) chips.push('<span class="wiz-chip" style="visibility:hidden">__</span>');
+    var act=(e.deptos||[]).filter(function(d){return!(e.excluidos||[]).includes(d);}).length;
+    return '<div class="depto-piso-row" style="margin-bottom:3px">'
+      +'<span class="depto-piso-label">P'+p+'</span>'
+      +'<input class="input-cant" data-ti="'+idx+'" data-piso="'+p+'" type="number" min="0" max="30" value="'+(e.cantidad||0)+'" style="width:42px;margin-right:8px">'
+      +'<div class="depto-chips-row">'+chips.join('')+'</div>'
+      +'<span style="font-size:10px;color:var(--text3);margin-left:6px" id="ac-'+idx+'-'+p+'">'+(e.deptos&&e.deptos.length?act+' act.':'')+'</span>'
+      +'</div>';
+  }).join('');
+
+  return '<div class="wiz-hint">💡 Ingresa cantidad y haz clic en un depto para excluirlo.</div>'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+    +'<span style="font-size:12px;color:var(--text2);white-space:nowrap">Piso tipo:</span>'
+    +'<input id="cf-tipo-'+idx+'" type="number" min="0" max="30" value="'+(t.cantDeptosTipo||0)+'" class="field-input" style="width:70px">'
+    +'<button class="btn btn-secondary btn-sm" onclick="aplicarTipo('+idx+')">Aplicar a todos →</button></div>'
+    +'<div style="overflow-x:auto;overflow-y:auto;max-height:55vh">'
+    +'<div style="min-width:max-content">'+rows+'</div>'
+    +'</div>'
+    +'<div id="tot-'+idx+'" style="font-size:12px;color:var(--text2);margin-top:8px;font-style:italic"></div>';
+}
+
+/* ── Wizard paso 1: single tower — skip denominación ── */
+function edifGeoHTML(idx){
+  var t=_cf.torres[idx]||defaultTorre(0);
+  var showDen = (_cf.cantEdificios||1) > 1;
+  return (showDen?'<div class="field-grid-2" style="margin-bottom:12px">'+fi('cf-den','Denominación (Torre A, Edificio...)','text',t.denominacion,'Torre A',true)+'</div>':'')
+    +'<div class="field-grid-4" style="margin-bottom:12px">'
+    +fi('cf-pisos','Pisos','number',t.pisos,'18',true)
+    +fi('cf-sub','Subterráneos','number',t.subterraneos,'3')
+    +(!_cf.plataCompartida?fi('cf-placa','Pisos placa estac.','number',t.pisosPlacaEstacionamiento||0,'2'):'')
+    +fi('cf-sala','Nivel sala máq.','number',t.nivelSalaMaquinas,'19')+'</div>'
+    +(!_cf.plataCompartida?
+      '<div class="campo-label" style="margin-bottom:6px">Superficie placa (m²)</div>'
+      +'<div class="field-grid-2" style="margin-bottom:12px">'
+      +fi('cf-supPlaca-torre','Superficie placa','number',t.superficiePlacaTorre||'','2200')
+      +'</div>'
+    :'')
+    +'<div class="campo-label" style="margin-bottom:8px">Superficies (m²)</div>'
+    +'<div class="field-grid-3">'
+    +fi('cf-stot','Total','number',t.superficieTotal,'13500')
+    +fi('cf-ssub','Subterráneos','number',t.superficieSubterraneos,'2800')
+    +fi('cf-spiso','Piso tipo','number',t.superficiePisoTipo,'680')+'</div>';
+}
+
+</script>
+</body>
+</html>
