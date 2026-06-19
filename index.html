@@ -539,9 +539,9 @@ textarea.field-input{resize:vertical;padding:8px 10px}
 
 <div class="toast" id="toast"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <script>
@@ -696,6 +696,12 @@ var FS_COL = 'registro_obras_proyectos';
 var _db=null, _auth=null, _currentUser=null, _unsubscribe=null;
 
 (function initFirebase(){
+  if (typeof firebase === 'undefined') {
+    console.error('[RO] Firebase no cargo. Revisa los <script> de firebasejs.');
+    var le = document.getElementById('login-error');
+    if (le) le.textContent = 'No se pudieron cargar los servicios. Recarga la pagina (Ctrl+Shift+R).';
+    return;
+  }
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
     _db   = firebase.firestore();
@@ -705,6 +711,7 @@ var _db=null, _auth=null, _currentUser=null, _unsubscribe=null;
 })();
 
 /* ══ AUTH ══ */
+if (typeof firebase !== 'undefined' && _auth) {
 firebase.auth().onAuthStateChanged(function(user){
   if(!user){ mostrarLogin(); return; }
   if(!_db){ iniciarApp(user); return; }
@@ -725,6 +732,7 @@ firebase.auth().onAuthStateChanged(function(user){
     })
     .catch(function(){ iniciarApp(user); }); // offline: allow cached access
 });
+} // fin del if (firebase disponible)
 
 function mostrarLogin(){
   document.querySelectorAll('.screen,.wizard-screen').forEach(function(s){s.classList.remove('active');});
@@ -752,6 +760,10 @@ function iniciarApp(user){
 }
 
 document.getElementById('btn-login').addEventListener('click', function(){
+  if (typeof firebase === 'undefined' || !_auth) {
+    document.getElementById('login-error').textContent = 'Los servicios no cargaron. Recarga la pagina (Ctrl+Shift+R).';
+    return;
+  }
   var provider = new firebase.auth.GoogleAuthProvider();
   _auth.signInWithPopup(provider).catch(function(e){
     document.getElementById('login-error').textContent = 'Error: '+e.message;
@@ -1516,12 +1528,7 @@ function renderTablaFiltrada(){
 }
 
 
-/* ══ INIT ══ */
-initMock();
 
-
-/* ══ INIT ══ */
-initMock();
 
 
 
