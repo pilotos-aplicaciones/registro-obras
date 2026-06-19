@@ -289,16 +289,16 @@ textarea.field-input{resize:vertical;padding:8px 10px}
 
 /* Depto grid — aligned columns */
 .depto-grid-wrap{overflow-x:auto;overflow-y:auto;max-height:60vh}
-.depto-piso-row{display:flex;align-items:center;gap:0;margin-bottom:1px}
+.depto-piso-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
 .depto-piso-label{font-size:11px;font-weight:600;color:var(--text2);
   width:52px;flex-shrink:0;font-family:var(--mono)}
-.depto-chips-row{display:flex;gap:3px;flex-wrap:nowrap}
+.depto-chips-row{display:flex;gap:3px;flex-wrap:wrap}
 .depto-chip{width:36px;text-align:center;padding:2px 0;background:var(--accent-l);
   color:var(--accent);border-radius:4px;font-size:10px;font-family:var(--mono);flex-shrink:0}
 .depto-chip.excl{background:var(--surface2);color:var(--text3);text-decoration:line-through}
 .depto-chip.empty{background:transparent;color:transparent;pointer-events:none}
 /* Wizard depto chips — clickable */
-.wiz-chip{width:36px;text-align:center;padding:3px 0;background:var(--accent-l);
+.wiz-chip{display:inline-block;min-width:36px;text-align:center;padding:3px 4px;background:var(--accent-l);
   color:var(--accent);border-radius:4px;font-size:10px;font-family:var(--mono);
   cursor:pointer;flex-shrink:0;user-select:none;transition:all .1s}
 .wiz-chip:hover{opacity:.75}
@@ -341,9 +341,9 @@ textarea.field-input{resize:vertical;padding:8px 10px}
   <button class="nbtn nbtn-secondary" id="nav-btn-sec" style="display:none" onclick="goInicio()">← Inicio</button>
   <button class="nbtn nbtn-secondary" id="nav-btn-editar" style="display:none" onclick="editarObraActiva()">⚙ Editar</button>
   <button class="nbtn nbtn-primary" id="nav-btn-prim" onclick="iniciarWizardNuevo()">+ Nueva Obra</button>
-  <div class="nav-sync ok" id="sync-pill"><span class="sync-dot"></span><span class="sync-label">Sincronizado</span></div>
+  <div class="nav-sync ok" id="sync-pill" style="display:none"><span class="sync-dot"></span><span class="sync-label">Sincronizado</span></div>
   <button class="nbtn nbtn-menu" id="menu-btn" onclick="toggleMenu(event)">☰</button>
-  <div class="nav-avatar" id="nav-avatar">RV</div>
+  <div class="nav-avatar" id="nav-avatar" style="display:none"></div>
 </nav>
 
 <div class="menu-dropdown" id="menu-dropdown">
@@ -729,17 +729,25 @@ firebase.auth().onAuthStateChanged(function(user){
 function mostrarLogin(){
   document.querySelectorAll('.screen,.wizard-screen').forEach(function(s){s.classList.remove('active');});
   document.getElementById('screen-login').classList.add('active');
-  ['nav-btn-prim','nav-btn-excel','nav-btn-sec','nav-btn-editar'].forEach(function(id){
-    document.getElementById(id).style.display='none';
+  ['nav-btn-prim','nav-btn-excel','nav-btn-sec','nav-btn-editar','menu-btn'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display='none';
   });
   document.getElementById('menu-vistas').style.display='none';
+  document.getElementById('nav-avatar').style.display='none';
+  document.getElementById('sync-pill').style.display='none';
 }
 
 function iniciarApp(user){
   _currentUser = user;
   document.getElementById('login-error').textContent = '';
   var ini = user.displayName || user.email || '';
-  document.getElementById('nav-avatar').textContent = ini.slice(0,2).toUpperCase();
+  var av = document.getElementById('nav-avatar');
+  av.textContent = ini.slice(0,2).toUpperCase();
+  av.style.display = '';
+  var sp = document.getElementById('sync-pill');
+  if(sp) sp.style.display = '';
+  var mb = document.getElementById('menu-btn');
+  if(mb) mb.style.display = '';
   listenObras();
 }
 
@@ -1170,8 +1178,11 @@ function togDep(ti,piso,depto){
   if(i>=0)e.excluidos.splice(i,1);else e.excluidos.push(depto);
   var chips=(e.deptos||[]).map(function(d){
     var excl=e.excluidos.includes(d);
-    return '<span class="chip-d'+(excl?' chip-excl':'')+'" onclick="togDep('+ti+','+piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+(excl?' ✕':'')+'</span>';
+    return '<span class="wiz-chip'+(excl?' excl':'')+'" onclick="togDep('+ti+','+piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+'</span>';
   }).join('');
+  var maxD=t.cantDeptosTipo||0;
+  t.departamentos.forEach(function(p){if((p.deptos||[]).length>maxD)maxD=(p.deptos||[]).length;});
+  while(chips.split('</span>').length-1<maxD) chips+='<span class="wiz-chip" style="visibility:hidden">__</span>';
   var prev=document.getElementById('pr-'+ti+'-'+piso);if(prev)prev.innerHTML=chips;
   var act=(e.deptos||[]).filter(function(d){return !e.excluidos.includes(d);}).length;
   var lbl=document.getElementById('ac-'+ti+'-'+piso);if(lbl)lbl.textContent=act+' act.';
@@ -1189,7 +1200,7 @@ function aplicarTipo(idx){
     if(inp2)inp2.value=cant;
     var chips=(e.deptos||[]).map(function(d){
       var excl=e.excluidos.includes(d);
-      return '<span class="chip-d'+(excl?' chip-excl':'')+'" onclick="togDep('+idx+','+e.piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+(excl?' ✕':'')+'</span>';
+      return '<span class="wiz-chip'+(excl?' excl':'')+'" onclick="togDep('+idx+','+e.piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+'</span>';
     }).join('');
     var p=document.getElementById('pr-'+idx+'-'+e.piso);if(p)p.innerHTML=chips;
     var act=(e.deptos||[]).filter(function(d){return !e.excluidos.includes(d);}).length;
@@ -1353,7 +1364,7 @@ function bindDep(idx){
         entry.excluidos=prev.filter(function(d){return entry.deptos.includes(d);});
         var chips=(entry.deptos||[]).map(function(d){
           var excl=entry.excluidos.includes(d);
-          return '<span class="chip-d'+(excl?' chip-excl':'')+'" onclick="togDep('+idx+','+piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+(excl?' ✕':'')+'</span>';
+          return '<span class="wiz-chip'+(excl?' excl':'')+'" onclick="togDep('+idx+','+piso+',\''+d+'\')" title="'+(excl?'Activar':'Desactivar')+'">'+d+'</span>';
         }).join('');
         var prv=document.getElementById('pr-'+idx+'-'+piso);if(prv)prv.innerHTML=chips;
         var act=entry.deptos.filter(function(d){return !entry.excluidos.includes(d);}).length;
@@ -1853,9 +1864,10 @@ function edifDepHTML(idx){
     }
   });
 
-  // Determine max deptos for column alignment
-  var maxD=parseInt((document.getElementById('cf-tipo-'+idx)||{}).value||t.cantDeptosTipo)||0;
+  // Determine max deptos for column alignment — use data only, no DOM
+  var maxD = t.cantDeptosTipo || 0;
   t.departamentos.forEach(function(p){if((p.deptos||[]).length>maxD)maxD=(p.deptos||[]).length;});
+  if(maxD===0) maxD = 1; // at least 1 column so row doesn't collapse
 
   // Piso 1 first (ascending)
   var rows=lista.map(function(p){
@@ -1870,7 +1882,7 @@ function edifDepHTML(idx){
     return '<div class="depto-piso-row" style="margin-bottom:3px">'
       +'<span class="depto-piso-label">P'+p+'</span>'
       +'<input class="input-cant" data-ti="'+idx+'" data-piso="'+p+'" type="number" min="0" max="30" value="'+(e.cantidad||0)+'" style="width:42px;margin-right:8px">'
-      +'<div class="depto-chips-row">'+chips.join('')+'</div>'
+      +'<div class="depto-chips-row" id="pr-'+idx+'-'+p+'">'+chips.join('')+'</div>'
       +'<span style="font-size:10px;color:var(--text3);margin-left:6px" id="ac-'+idx+'-'+p+'">'+(e.deptos&&e.deptos.length?act+' act.':'')+'</span>'
       +'</div>';
   }).join('');
