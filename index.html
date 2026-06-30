@@ -340,9 +340,9 @@ textarea.field-input{resize:vertical;padding:8px 10px}
   <button class="btn-excel" id="nav-btn-excel" style="display:none" onclick="exportarExcel()">⬇ Excel</button>
   <button class="nbtn nbtn-secondary" id="nav-btn-sec" style="display:none" onclick="goInicio()">← Inicio</button>
   <button class="nbtn nbtn-secondary" id="nav-btn-editar" style="display:none" onclick="editarObraActiva()">⚙ Editar</button>
-  <button class="nbtn nbtn-primary" id="nav-btn-prim" onclick="iniciarWizardNuevo()">+ Nueva Obra</button>
+  <button class="nbtn nbtn-primary" id="nav-btn-prim" style="display:none" onclick="iniciarWizardNuevo()">+ Nueva Obra</button>
   <div class="nav-sync ok" id="sync-pill" style="display:none"><span class="sync-dot"></span><span class="sync-label">Sincronizado</span></div>
-  <button class="nbtn nbtn-menu" id="menu-btn" onclick="toggleMenu(event)">☰</button>
+  <button class="nbtn nbtn-menu" id="menu-btn" style="display:none" onclick="toggleMenu(event)">☰</button>
   <div class="nav-avatar" id="nav-avatar" style="display:none"></div>
 </nav>
 
@@ -759,14 +759,35 @@ function iniciarApp(user){
   listenObras();
 }
 
+// Handle redirect result on page load (after Google sends user back)
+if (typeof firebase !== 'undefined' && _auth) {
+  _auth.getRedirectResult().catch(function(e){
+    if(e.code !== 'auth/no-auth-event'){
+      var le=document.getElementById('login-error');
+      if(le) le.textContent = e.code === 'auth/unauthorized-domain'
+        ? 'Dominio no autorizado. Contacta al administrador.'
+        : 'Error al iniciar sesión: '+e.message;
+    }
+  });
+}
 document.getElementById('btn-login').addEventListener('click', function(){
   if (typeof firebase === 'undefined' || !_auth) {
     document.getElementById('login-error').textContent = 'Los servicios no cargaron. Recarga la pagina (Ctrl+Shift+R).';
     return;
   }
+  var btn = document.getElementById('btn-login');
+  btn.disabled = true;
+  btn.textContent = 'Redirigiendo a Google...';
   var provider = new firebase.auth.GoogleAuthProvider();
-  _auth.signInWithPopup(provider).catch(function(e){
-    document.getElementById('login-error').textContent = 'Error: '+e.message;
+  // signInWithRedirect en vez de signInWithPopup: evita bloqueo por
+  // Cross-Origin-Opener-Policy en GitHub Pages
+  _auth.signInWithRedirect(provider).catch(function(e){
+    btn.disabled = false;
+    btn.textContent = 'Iniciar sesión con Google';
+    document.getElementById('login-error').textContent =
+      e.code === 'auth/unauthorized-domain'
+      ? 'Dominio no autorizado en Firebase. Contacta al administrador.'
+      : 'Error: '+e.message;
   });
 });
 
