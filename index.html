@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: signInWithRedirect-fix v2.1.1 -->
+<!-- BUILD: signInWithPopup-final v2.1.2 -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -770,31 +770,12 @@ function iniciarApp(user){
   listenObras();
 }
 
-// Handle redirect result on page load (after Google sends user back)
-if (typeof firebase !== 'undefined' && _auth) {
-  console.log('[RO] Verificando resultado de redirect al cargar la pagina...');
-  _auth.getRedirectResult()
-    .then(function(result){
-      console.log('[RO] getRedirectResult OK. user:', result.user ? result.user.email : '(ninguno - carga normal sin redirect previo)');
-      if(result.user){
-        var le=document.getElementById('login-error');
-        if(le){ le.style.color='#1E4D32'; le.textContent='✓ Autenticado como '+result.user.email+'. Verificando acceso...'; }
-      }
-    })
-    .catch(function(e){
-      console.error('[RO] getRedirectResult ERROR:', e.code, e.message, e);
-      if(e.code !== 'auth/no-auth-event'){
-        var le=document.getElementById('login-error');
-        if(le){
-          le.style.color = '#cc2929';
-          le.style.fontWeight = '600';
-          le.textContent = e.code === 'auth/unauthorized-domain'
-            ? '⚠ Dominio no autorizado en Firebase: '+window.location.hostname
-            : '⚠ Error al volver de Google ['+e.code+']: '+e.message;
-        }
-      }
-    });
-}
+// NOTA: usamos signInWithPopup (no signInWithRedirect). Es la recomendacion
+// oficial de Firebase para navegadores que bloquean storage de terceros o
+// activan 'bounce tracking mitigation' (Chrome incognito y versiones recientes),
+// que rompen el flujo de signInWithRedirect silenciosamente.
+// El warning de consola 'Cross-Origin-Opener-Policy... window.closed' es
+// inofensivo y conocido (reportado en firebase-js-sdk#8541): no afecta el login.
 document.getElementById('btn-login').addEventListener('click', function(){
   console.log('[RO] Click en boton de login');
   if (typeof firebase === 'undefined' || !_auth) {
@@ -805,33 +786,33 @@ document.getElementById('btn-login').addEventListener('click', function(){
   var btn = document.getElementById('btn-login');
   var err = document.getElementById('login-error');
   err.style.color = '';
+  err.style.fontWeight = '';
   err.textContent = '';
   btn.disabled = true;
-  btn.textContent = 'Redirigiendo a Google...';
+  btn.textContent = 'Abriendo ventana de Google...';
   var provider = new firebase.auth.GoogleAuthProvider();
   console.log('[RO] authDomain configurado:', FIREBASE_CONFIG.authDomain);
   console.log('[RO] dominio actual:', window.location.hostname);
-  // signInWithRedirect en vez de signInWithPopup: evita bloqueo por
-  // Cross-Origin-Opener-Policy en GitHub Pages
-  _auth.signInWithRedirect(provider)
-    .then(function(){ console.log('[RO] signInWithRedirect resuelto (no deberia verse, la pagina deberia haber navegado)'); })
+  _auth.signInWithPopup(provider)
+    .then(function(result){
+      console.log('[RO] signInWithPopup OK. user:', result.user.email);
+      btn.disabled = false;
+      btn.textContent = 'Iniciar sesión con Google';
+      // onAuthStateChanged se encarga del resto (verificar acceso e iniciar app)
+    })
     .catch(function(e){
-      console.error('[RO] Error en signInWithRedirect:', e.code, e.message);
+      console.error('[RO] Error en signInWithPopup:', e.code, e.message);
       btn.disabled = false;
       btn.textContent = 'Iniciar sesión con Google';
       err.style.color = '#cc2929';
       err.style.fontWeight = '600';
       err.textContent =
-        e.code === 'auth/unauthorized-domain'
-        ? '⚠ Dominio no autorizado ('+window.location.hostname+'). Contacta al administrador.'
+        e.code === 'auth/unauthorized-domain' ? '⚠ Dominio no autorizado ('+window.location.hostname+'). Contacta al administrador.'
+        : e.code === 'auth/popup-blocked' ? '⚠ Ventana emergente bloqueada. Permite popups para este sitio e intenta de nuevo.'
+        : e.code === 'auth/popup-closed-by-user' ? 'Inicio de sesión cancelado.'
+        : e.code === 'auth/cancelled-popup-request' ? '' // ignorar: doble click
         : '⚠ Error ['+e.code+']: '+e.message;
     });
-  // Si despues de 5s seguimos en esta pagina sin navegar, algo se atascó
-  setTimeout(function(){
-    if(document.getElementById('screen-login').classList.contains('active') && btn.disabled){
-      console.warn('[RO] Handgon — 5s sin navegar ni error. Revisa popup blockers o config de Firebase.');
-    }
-  }, 5000);
 });
 
 /* ══ SYNC INDICATOR ══ */
