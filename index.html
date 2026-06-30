@@ -773,24 +773,42 @@ if (typeof firebase !== 'undefined' && _auth) {
   });
 }
 document.getElementById('btn-login').addEventListener('click', function(){
+  console.log('[RO] Click en boton de login');
   if (typeof firebase === 'undefined' || !_auth) {
+    console.error('[RO] Firebase/_auth no disponible al hacer click');
     document.getElementById('login-error').textContent = 'Los servicios no cargaron. Recarga la pagina (Ctrl+Shift+R).';
     return;
   }
   var btn = document.getElementById('btn-login');
+  var err = document.getElementById('login-error');
+  err.style.color = '';
+  err.textContent = '';
   btn.disabled = true;
   btn.textContent = 'Redirigiendo a Google...';
   var provider = new firebase.auth.GoogleAuthProvider();
+  console.log('[RO] authDomain configurado:', FIREBASE_CONFIG.authDomain);
+  console.log('[RO] dominio actual:', window.location.hostname);
   // signInWithRedirect en vez de signInWithPopup: evita bloqueo por
   // Cross-Origin-Opener-Policy en GitHub Pages
-  _auth.signInWithRedirect(provider).catch(function(e){
-    btn.disabled = false;
-    btn.textContent = 'Iniciar sesión con Google';
-    document.getElementById('login-error').textContent =
-      e.code === 'auth/unauthorized-domain'
-      ? 'Dominio no autorizado en Firebase. Contacta al administrador.'
-      : 'Error: '+e.message;
-  });
+  _auth.signInWithRedirect(provider)
+    .then(function(){ console.log('[RO] signInWithRedirect resuelto (no deberia verse, la pagina deberia haber navegado)'); })
+    .catch(function(e){
+      console.error('[RO] Error en signInWithRedirect:', e.code, e.message);
+      btn.disabled = false;
+      btn.textContent = 'Iniciar sesión con Google';
+      err.style.color = '#cc2929';
+      err.style.fontWeight = '600';
+      err.textContent =
+        e.code === 'auth/unauthorized-domain'
+        ? '⚠ Dominio no autorizado ('+window.location.hostname+'). Contacta al administrador.'
+        : '⚠ Error ['+e.code+']: '+e.message;
+    });
+  // Si despues de 5s seguimos en esta pagina sin navegar, algo se atascó
+  setTimeout(function(){
+    if(document.getElementById('screen-login').classList.contains('active') && btn.disabled){
+      console.warn('[RO] Handgon — 5s sin navegar ni error. Revisa popup blockers o config de Firebase.');
+    }
+  }, 5000);
 });
 
 /* ══ SYNC INDICATOR ══ */
