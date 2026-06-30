@@ -715,6 +715,7 @@ var _db=null, _auth=null, _currentUser=null, _unsubscribe=null;
 /* ══ AUTH ══ */
 if (typeof firebase !== 'undefined' && _auth) {
 firebase.auth().onAuthStateChanged(function(user){
+  console.log('[RO] onAuthStateChanged disparado. user:', user ? user.email : 'null');
   if(!user){ mostrarLogin(); return; }
   if(!_db){ iniciarApp(user); return; }
   _db.collection('plataforma_usuarios').doc(user.email.toLowerCase()).get()
@@ -763,14 +764,28 @@ function iniciarApp(user){
 
 // Handle redirect result on page load (after Google sends user back)
 if (typeof firebase !== 'undefined' && _auth) {
-  _auth.getRedirectResult().catch(function(e){
-    if(e.code !== 'auth/no-auth-event'){
-      var le=document.getElementById('login-error');
-      if(le) le.textContent = e.code === 'auth/unauthorized-domain'
-        ? 'Dominio no autorizado. Contacta al administrador.'
-        : 'Error al iniciar sesión: '+e.message;
-    }
-  });
+  console.log('[RO] Verificando resultado de redirect al cargar la pagina...');
+  _auth.getRedirectResult()
+    .then(function(result){
+      console.log('[RO] getRedirectResult OK. user:', result.user ? result.user.email : '(ninguno - carga normal sin redirect previo)');
+      if(result.user){
+        var le=document.getElementById('login-error');
+        if(le){ le.style.color='#1E4D32'; le.textContent='✓ Autenticado como '+result.user.email+'. Verificando acceso...'; }
+      }
+    })
+    .catch(function(e){
+      console.error('[RO] getRedirectResult ERROR:', e.code, e.message, e);
+      if(e.code !== 'auth/no-auth-event'){
+        var le=document.getElementById('login-error');
+        if(le){
+          le.style.color = '#cc2929';
+          le.style.fontWeight = '600';
+          le.textContent = e.code === 'auth/unauthorized-domain'
+            ? '⚠ Dominio no autorizado en Firebase: '+window.location.hostname
+            : '⚠ Error al volver de Google ['+e.code+']: '+e.message;
+        }
+      }
+    });
 }
 document.getElementById('btn-login').addEventListener('click', function(){
   console.log('[RO] Click en boton de login');
