@@ -708,7 +708,15 @@ var _db=null, _auth=null, _currentUser=null, _unsubscribe=null;
     firebase.initializeApp(FIREBASE_CONFIG);
     _db   = firebase.firestore();
     _auth = firebase.auth();
-    _db.enablePersistence({ synchronizeTabs: true }).catch(function(){});
+    // CRITICO: persistencia LOCAL explicita para Auth. Sin esto, en algunos
+    // navegadores el estado de sesion se pierde entre el redirect a Google
+    // y el regreso a la pagina (la app vive bajo un sub-path del portal
+    // pilotos-aplicaciones.github.io/registro-obras/).
+    _auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .catch(function(e){ console.warn('[RO] setPersistence:', e.message); });
+    _db.enablePersistence().catch(function(e){
+      if(e.code==='failed-precondition') console.warn('[RO] Firestore persistence: multiples tabs abiertas o cache en conflicto.');
+    });
   } catch(e){ console.warn('[RO] Firebase init:', e.message); }
 })();
 
