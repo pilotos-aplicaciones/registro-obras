@@ -725,15 +725,30 @@ if (typeof firebase !== 'undefined' && _auth) {
 firebase.auth().onAuthStateChanged(function(user){
   console.log('[RO] onAuthStateChanged disparado. user:', user ? user.email : 'null');
   if(!user){ mostrarLogin(); return; }
-  if(!_db){ iniciarApp(user); return; }
-  _db.collection('plataforma_usuarios').doc(user.email.toLowerCase()).get()
+  if(!_db){ console.log('[RO] _db no disponible, iniciando app sin verificar Firestore'); iniciarApp(user); return; }
+  console.log('[RO] Consultando plataforma_usuarios para:', user.email.toLowerCase());
+  var docId = user.email.toLowerCase();
+  var resuelto = false;
+  var timeoutVerif = setTimeout(function(){
+    if(!resuelto){
+      console.warn('[RO] TIMEOUT: la consulta a plataforma_usuarios no respondio en 8s. Revisa reglas de seguridad de Firestore. Iniciando app de todas formas.');
+      resuelto = true;
+      iniciarApp(user);
+    }
+  }, 8000);
+  _db.collection('plataforma_usuarios').doc(docId).get()
     .then(function(snap){
+      if(resuelto) return; resuelto = true; clearTimeout(timeoutVerif);
+      console.log('[RO] Documento plataforma_usuarios existe?', snap.exists);
       var d = snap.exists ? snap.data() : null;
+      console.log('[RO] Datos del documento:', JSON.stringify(d));
       var ok = d && d.activo !== false && (d.apps||[]).includes(APP_ID);
+      console.log('[RO] Acceso permitido?', ok);
       if(!ok){
         var msg = !d ? 'Tu cuenta ('+user.email+') no está registrada en la plataforma.'
           : d.activo===false ? 'Tu cuenta está desactivada.'
           : 'No tienes acceso a esta app. Solicítalo al administrador.';
+        console.warn('[RO] Acceso denegado:', msg);
         document.getElementById('login-error').textContent = msg;
         _auth.signOut();
         mostrarLogin();
@@ -741,7 +756,11 @@ firebase.auth().onAuthStateChanged(function(user){
       }
       iniciarApp(user);
     })
-    .catch(function(){ iniciarApp(user); }); // offline: allow cached access
+    .catch(function(err){
+      if(resuelto) return; resuelto = true; clearTimeout(timeoutVerif);
+      console.error('[RO] ERROR consultando plataforma_usuarios:', err.code, err.message);
+      iniciarApp(user); // offline o error de permisos: permitir acceso con cache
+    });
 });
 } // fin del if (firebase disponible)
 
