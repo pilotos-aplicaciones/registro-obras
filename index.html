@@ -767,9 +767,15 @@ onAuthStateChanged(_auth, async function(user){
       if(mb) mb.style.display = '';
       listenObras();
     } catch(e){
-      console.error('[RO] Error verificando acceso:', e);
-      await fbSignOut(_auth);
-      document.getElementById('login-error').textContent = 'Error al verificar acceso. Intenta de nuevo.';
+      console.error('[RO] Error verificando acceso:', e.code, e.message);
+      // Si es permission-denied, las reglas de Firestore bloquean la lectura de plataforma_usuarios
+      var errMsg = e.code === 'permission-denied'
+        ? 'Error de permisos en base de datos. Contacta al administrador (Rodrigo).'
+        : 'Error al verificar acceso [' + e.code + ']: ' + e.message;
+      document.getElementById('login-error').textContent = errMsg;
+      document.getElementById('login-error').style.fontWeight = '600';
+      // NO hacer signOut — dejar la sesión activa para que el usuario pueda ver el mensaje
+      // y no tener que volver a autenticarse con Google cada vez
     }
   } else {
     _currentUser = null;
