@@ -141,6 +141,7 @@ table.tbl tbody tr:hover { background: var(--surface2); }
 .field textarea { resize:vertical; min-height:60px; }
 .field-row { display:flex; gap:12px; }
 .field-row > .field { flex:1; }
+.wiz-group-label { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color: var(--text3); font-weight:600; margin:4px 0 10px; }
 .chk-row { display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:12px; }
 .tabs-torre { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
 .tab-torre { padding:6px 14px; border:1px solid var(--border); border-radius:20px; font-size:12.5px; background:#fff; }
@@ -811,8 +812,8 @@ function renderWizPaso1(body){
     if(o.plataCompartida){
       pf.innerHTML = `
         <div class="field-row">
-          <div class="field"><label>Pisos placa</label><input type="number" id="f-pisosPlaca" value="${o.pisosPlacaEstacionamiento??''}"></div>
-          <div class="field"><label>Superficie placa (m²)</label><input type="number" id="f-supPlaca" value="${o.superficiePlaca??''}"></div>
+          <div class="field"><label>Pisos Placa Estacionamiento</label><input type="number" id="f-pisosPlaca" value="${o.pisosPlacaEstacionamiento??''}"></div>
+          <div class="field"><label>Sup. Placa Estacionamiento (m²)</label><input type="number" id="f-supPlaca" value="${o.superficiePlaca??''}"></div>
         </div>`;
       document.getElementById('f-pisosPlaca').addEventListener('input', e => o.pisosPlacaEstacionamiento = parseFloat(e.target.value)||null);
       document.getElementById('f-supPlaca').addEventListener('input', e => o.superficiePlaca = parseFloat(e.target.value)||null);
@@ -843,20 +844,23 @@ function renderWizPaso2(body){
     const c = document.getElementById('torre-form-p2');
     c.innerHTML = `
       ${showDenom ? `<div class="field"><label>Denominación</label><input id="t-denom" value="${esc(t.denominacion)}" placeholder="Torre A"></div>` : ''}
+      <div class="wiz-group-label">Niveles</div>
       <div class="field-row">
         <div class="field"><label>Pisos *</label><input type="number" id="t-pisos" value="${t.pisos??''}"></div>
         <div class="field"><label>Subterráneos</label><input type="number" id="t-subt" value="${t.subterraneos??''}"></div>
         <div class="field"><label>Nivel sala máquinas</label><input type="number" id="t-nivsm" value="${t.nivelSalaMaquinas??''}"></div>
       </div>
+      <div class="wiz-group-label">Superficies</div>
       <div class="field-row">
         <div class="field"><label>Sup. Total (m²)</label><input type="number" id="t-supTotal" value="${t.superficieTotal??''}"></div>
-        <div class="field"><label>Sup. Subterráneos (m²)</label><input type="number" id="t-supSub" value="${t.superficieSubterraneos??''}"></div>
         <div class="field"><label>Sup. Piso Tipo (m²)</label><input type="number" id="t-supPT" value="${t.superficiePisoTipo??''}"></div>
+        <div class="field"><label>Sup. Subterráneos (m²)</label><input type="number" id="t-supSub" value="${t.superficieSubterraneos??''}"></div>
       </div>
       ${showPlacaPropia ? `
+      <div class="wiz-group-label">Estacionamiento</div>
       <div class="field-row">
-        <div class="field"><label>Pisos placa (torre)</label><input type="number" id="t-pisosPlaca" value="${t.pisosPlacaEstacionamiento??''}"></div>
-        <div class="field"><label>Sup. placa (m²)</label><input type="number" id="t-supPlaca" value="${t.superficiePlacaTorre??''}"></div>
+        <div class="field"><label>Pisos Placa Estacionamiento</label><input type="number" id="t-pisosPlaca" value="${t.pisosPlacaEstacionamiento??''}"></div>
+        <div class="field"><label>Sup. Placa Estacionamiento (m²)</label><input type="number" id="t-supPlaca" value="${t.superficiePlacaTorre??''}"></div>
       </div>` : ''}
     `;
     const bindNum = (id, prop) => { const el = document.getElementById(id); if(el) el.addEventListener('input', e => t[prop] = e.target.value===''?null:parseFloat(e.target.value)); };
